@@ -6,32 +6,39 @@
 /*   By: jserrano <jserrano@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/21 12:12:25 by jserrano          #+#    #+#             */
-/*   Updated: 2021/10/21 17:27:29 by jserrano         ###   ########.fr       */
+/*   Updated: 2021/10/21 17:49:17 by jserrano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
+template <typename T>
+struct v_list
+{
+	struct v_list	*prev;
+	T				val;
+	struct v_list	*next;
+};
 
 template <typename T>
-class	Array{
+class	vector{
 
 	private:
-		T *array;
+		struct v_list *vector;
 		int n;
 
 	public:
-		Array(): array(NULL), n(0) {}
-		Array(unsigned int n):array(new T[n]), n(n){}
-		Array(Array &obj):n(obj.size()){
+		vector(): vector(NULL), n(0) {}
+		vector(unsigned int n):vector(new T[n]), n(n){}
+		vector(vector &obj):n(obj.size()){
 
-			this->array = new T[this->n];
+			this->vector = new T[this->n];
 
 			for (int i = 0; i < this->n; i++)
-				this->array[i] = obj[i];
+				this->vector[i] = obj[i];
 		}
-		~Array(){
-			if (this->array)
-				delete[] this->array;
+		~vector(){
+			if (this->vector)
+				delete[] this->vector;
 		}
 
 		int size(){
@@ -45,16 +52,16 @@ class	Array{
 				}
 		};
 
-		Array	&operator=(Array &arr){
+		vector	&operator=(vector &arr){
 
 			this->n = arr.size();
 
-			if (this->array)
-				delete[] this->array;
-			this->array = new T[this->n];
+			if (this->vector)
+				delete[] this->vector;
+			this->vector = new T[this->n];
 
 			for (int i = 0; i < this->n; i++)
-				this->array[i] = arr[i];
+				this->vector[i] = arr[i];
 
 			return *this;
 		}
@@ -68,6 +75,6 @@ class	Array{
 				std::cout << std::endl << e.what() << std::endl;
 			}
 
-			return this->array[i];
+			return this->vector[i];
 		}
 };
