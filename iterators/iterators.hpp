@@ -4,7 +4,7 @@ namespace ft{
 	template<
 		typename Category,
 		typename T,
-		typename Distance = std::ptrdiff_t,
+		typename Distance = ptrdiff_t,
 		typename Pointer = T*,
 		typename Reference = T&
 	> struct iterator {
@@ -51,5 +51,5 @@ namespace ft{
 		typename iterator_traits<Iter>::reference
 	> {
 
-	}
+	};
 };
