@@ -16,7 +16,7 @@
 
 namespace ft{
 
-	template<
+	/*template<
 		typename Category,
 		typename T,
 		typename Distance = std::ptrdiff_t,
@@ -41,7 +41,7 @@ namespace ft{
 
 		private:
 		pointer m_ptr;
-	};
+	};*/
 
 	template <class Iter>
 	struct iterator_traits {
@@ -70,7 +70,7 @@ namespace ft{
 		using	iterator_category = std::random_access_iterator_tag;
 	};
 
-	template <class Iter>
+	/*template <class Iter>
 	class reverse_iterator : public iterator <
 		typename iterator_traits<Iter>::iterator_category,
 		typename iterator_traits<Iter>::value_type,
@@ -94,5 +94,5 @@ namespace ft{
 		reverse_iterator& operator=(const reverse_iterator<U>& other) {return *this;}
 		iterator_type base() const {return iterator_type;}
 
-	};
+	};*/
 };

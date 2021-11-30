@@ -10,8 +10,13 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "iterators/iterators.hpp"
+#include <iostream>
+#include <string>
+#include <deque>
+//#include <map.hpp>
+//#include <stack.hpp>
+#include "vector.hpp"
 
-int main(){
+int main(int argc, char** argv) {
 
 }
