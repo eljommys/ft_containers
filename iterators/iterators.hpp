@@ -72,12 +72,22 @@ namespace ft{
 		pointer operator->() const {return std::addressof(operator*());}
 		operator[](difference_type n) const {base()[-n-1];}
 
-		reverse_iterator& operator++() {current.operator--();return *this}
-		reverse_iterator operator++(int) {return reverse_iterator_iterator(current.operator--(0));}
-		reverse_iterator& operator--() {current.operator++();return *this}
-		reverse_iterator operator--(int) {return reverse_iterator_iterator(current.operator++(0));}
+		reverse_iterator& operator++() { current--; return *this }
+		reverse_iterator operator++(int) { reverse_iterator tmp(*this); current--; return tmp; }
+		reverse_iterator& operator--() { current++; return *this }
+		reverse_iterator operator--(int) { reverse_iterator tmp(*this); current++; return tmp; }
+		reverse_iterator operator+( difference_type n ) const { return reverse_iterator(current - n); }
+		reverse_iterator operator-( difference_type n ) const { return reverse_iterator(current + n); }
+		reverse_iterator& operator+=( difference_type n ) { current -= n; return *this; }
+		reverse_iterator& operator-=( difference_type n ) { current += n; return *this; }
 
 		protected:
 			iterator_type current;
 	};
+
+	template< bool B, class T = void >
+	struct enable_if {};
+
+	template<class T>
+	struct enable_if<true, T> { typedef T type; };
 };
