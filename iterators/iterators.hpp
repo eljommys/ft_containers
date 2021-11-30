@@ -66,10 +66,18 @@ namespace ft{
 		reverse_iterator(const reverse_iterator<U>& other)current(other.base()){}
 
 		template<class U>
-		reverse_iterator& operator=(const reverse_iterator<U>& other) {current = other.base();return *this;}
+		reverse_iterator& operator=(const reverse_iterator<U>& other) {current = other.base(); return *this;}
 		iterator_type base() const {return current;}
+		reference operator*() const {Iter tmp = current; return *--tmp;}
+		pointer operator->() const {return std::addressof(operator*());}
+		operator[](difference_type n) const {base()[-n-1];}
+
+		reverse_iterator& operator++() {current.operator--();return *this}
+		reverse_iterator operator++(int) {return reverse_iterator_iterator(current.operator--(0));}
+		reverse_iterator& operator--() {current.operator++();return *this}
+		reverse_iterator operator--(int) {return reverse_iterator_iterator(current.operator++(0));}
 
 		protected:
-			iterator_category current;
+			iterator_type current;
 	};
 };
