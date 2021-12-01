@@ -13,6 +13,7 @@
 #pragma once
 
 #include <cstddef>
+#include <type_traits>
 
 namespace ft{
 
@@ -46,7 +47,7 @@ namespace ft{
 	};
 
 	template <class Iter>
-	class reverse_iterator : public ft::iterator <
+	class reverse_iterator : public std::iterator <
 		typename iterator_traits<Iter>::iterator_category,
 		typename iterator_traits<Iter>::value_type,
 		typename iterator_traits<Iter>::difference_type,
@@ -90,4 +91,19 @@ namespace ft{
 
 	template<class T>
 	struct enable_if<true, T> { typedef T type; };
+
+	template< class T >
+	struct is_integral { static const bool value = false; };
+
+	struct is_integral<bool> {static const bool value = true;};
+	struct is_integral<char> {static const bool value = true;};
+	struct is_integral<char16_t> {static const bool value = true;};
+	struct is_integral<char32_t> {static const bool value = true;};
+	struct is_integral<wchar_t> {static const bool value = true;};
+	struct is_integral<short> {static const bool value = true;};
+	struct is_integral<int> {static const bool value = true;};
+	struct is_integral<long> {static const bool value = true;};
+	struct is_integral<long long> {static const bool value = true;};
+
+
 };
