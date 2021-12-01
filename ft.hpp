@@ -6,7 +6,7 @@
 /*   By: jserrano <jserrano@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/28 16:39:15 by marvin            #+#    #+#             */
-/*   Updated: 2021/12/01 17:45:00 by jserrano         ###   ########.fr       */
+/*   Updated: 2021/12/01 18:06:29 by jserrano         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include <cstddef>
 #include <type_traits>
 #include <algorithm>
+#include <memory>
 
 namespace ft{
 
@@ -35,7 +36,7 @@ namespace ft{
 		typedef T value_type;
 		typedef T* pointer;
 		typedef T& reference;
-		typedef std::random_access_iterator_tag iterator_category;
+		typedef std::random_access_iterator_tag iterator_category; //no se si esto esta bien
 	};
 
 	template <typename T>
