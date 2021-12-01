@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft.hpp                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jserrano <jserrano@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/28 16:39:15 by marvin            #+#    #+#             */
-/*   Updated: 2021/12/01 18:06:29 by jserrano         ###   ########.fr       */
+/*   Updated: 2021/12/01 23:22:21 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,22 @@
 
 namespace ft{
 
-	typedef std::iterator iterator;
+	struct input_iterator_tag { };
+	struct output_iterator_tag { };
+	struct forward_iterator_tag : public input_iterator_tag { };
+	struct bidirectional_iterator_tag : public forward_iterator_tag { };
+	struct random_access_iterator_tag : public bidirectional_iterator_tag { };
+	struct contiguous_iterator_tag: public random_access_iterator_tag { };
+
+	template <	class Category, class T, class Distance = ptrdiff_t,
+				class Pointer = T*, class Reference = T&>
+	struct iterator {
+		typedef T			value_type;
+		typedef Distance	difference_type;
+		typedef Pointer		pointer;
+		typedef Reference	reference;
+		typedef Category	iterator_category;
+	};
 
 	template <class Iter>
 	struct iterator_traits {
@@ -49,7 +64,7 @@ namespace ft{
 	};
 
 	template <class Iter>
-	class reverse_iterator : public std::iterator <
+	class reverse_iterator : public ft::iterator <
 		typename iterator_traits<Iter>::iterator_category,
 		typename iterator_traits<Iter>::value_type,
 		typename iterator_traits<Iter>::difference_type,
@@ -199,7 +214,7 @@ namespace ft{
 		template <class T1, class T2>
 		bool operator>= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
 		{ return !(lhs<rhs); }
-	}
+	};
 
 	template <class T1,class T2>
 	pair<T1,T2> make_pair (T1 x, T2 y) {
