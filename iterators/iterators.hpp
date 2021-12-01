@@ -14,6 +14,7 @@
 
 #include <cstddef>
 #include <type_traits>
+#include <algorithm>
 
 namespace ft{
 
@@ -82,6 +83,39 @@ namespace ft{
 		reverse_iterator& operator+=( difference_type n ) { current -= n; return *this; }
 		reverse_iterator& operator-=( difference_type n ) { current += n; return *this; }
 
+		template< class Iterator1, class Iterator2 >
+		bool operator==(const reverse_iterator<Iterator1>& lhs,	const reverse_iterator<Iterator2>& rhs) {
+			return (lhs.base() == rhs.base());
+		}
+		template< class Iterator1, class Iterator2 >
+		bool operator!=(const reverse_iterator<Iterator1>& lhs, const reverse_iterator<Iterator2>& rhs) {
+			return (lhs.base() != rhs.base());
+		}
+		template< class Iterator1, class Iterator2 >
+		bool operator<(const reverse_iterator<Iterator1>& lhs, const reverse_iterator<Iterator2>& rhs) {
+			return (lhs.base() > rhs.base());
+		}
+		template< class Iterator1, class Iterator2 >
+		bool operator<=(const reverse_iterator<Iterator1>& lhs, const reverse_iterator<Iterator2>& rhs) {
+			return (lhs.base() >= rhs.base());
+		}
+		template< class Iterator1, class Iterator2 >
+		bool operator>( const reverse_iterator<Iterator1>& lhs, const reverse_iterator<Iterator2>& rhs ) {
+			return (lhs.base() < rhs.base());
+		}
+		template< class Iterator1, class Iterator2 >
+		bool operator>=( const reverse_iterator<Iterator1>& lhs, const reverse_iterator<Iterator2>& rhs ) {
+			return (lhs.base() <= rhs.base());
+		}
+		template< class Iterator >
+		reverse_iterator<Iterator> operator+	(difference_type n) const {
+			return reverse_iterator(current - n);
+		}
+		template< class Iterator >
+		reverse_iterator<Iterator> operator-	(difference_type n) const {
+			return reverse_iterator(current + n);
+		}
+
 		protected:
 			iterator_type current;
 	};
@@ -105,5 +139,70 @@ namespace ft{
 	struct is_integral<long> {static const bool value = true;};
 	struct is_integral<long long> {static const bool value = true;};
 
+	template< class InputIt1, class InputIt2 >
+	bool lexicographical_compare(	InputIt1 first1, InputIt1 last1,
+									InputIt2 first2, InputIt2 last2 ) {
+		while (first1!=last1) {
+			if (first2==last2 || *first2<*first1) return false;
+			else if (*first1<*first2) return true;
+			++first1; ++first2;
+		}
+		return (first2!=last2);
+	}
+	/* template< class InputIt1, class InputIt2, class Compare>
+	bool lexicographical_compare(	InputIt1 first1, InputIt1 last1,
+									InputIt2 first2, InputIt2 last2,
+									Compare comp) {
+		while (first1!=last1) {
+			if (comp(first1, first2)) return false;
+			else if (*first1<*first2) return true;
+			++first1; ++first2;
+		}
+		return (first2!=last2);
+	} */
+
+	template< class T1, class T2> struct pair {
+		typedef T1 first_type;
+		typedef T2 second_type;
+
+		T1 first;
+		T2 second;
+
+		pair(): first(), second(){};
+		pair(const T1& x, const T2& y): first(x), second(y){}
+		template<class U1, class U2>
+		pair(const pair<U1, U2>& p): first(p.first), second(p.second){}
+
+		pair& operator=(const pair& pr){first = pr.first; second = pr.second; return *this;}
+
+		template <class T1, class T2>
+		bool operator== (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
+		{ return lhs.first==rhs.first && lhs.second==rhs.second; }
+
+		template <class T1, class T2>
+		bool operator!= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
+		{ return !(lhs==rhs); }
+
+		template <class T1, class T2>
+		bool operator<  (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
+		{ return lhs.first<rhs.first || (!(rhs.first<lhs.first) && lhs.second<rhs.second); }
+
+		template <class T1, class T2>
+		bool operator<= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
+		{ return !(rhs<lhs); }
+
+		template <class T1, class T2>
+		bool operator>  (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
+		{ return rhs<lhs; }
+
+		template <class T1, class T2>
+		bool operator>= (const pair<T1,T2>& lhs, const pair<T1,T2>& rhs)
+		{ return !(lhs<rhs); }
+	}
+
+	template <class T1,class T2>
+	pair<T1,T2> make_pair (T1 x, T2 y) {
+		return ( pair<T1,T2>(x,y) );
+	}
 
 };
