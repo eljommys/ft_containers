@@ -31,7 +31,6 @@ namespace ft
 			pointer ptr;
 	}
 
-
 	template < class T, class Alloc = std::allocator<T> >
 	class vector{
 		typedef T value_type;
