@@ -16,6 +16,9 @@
 #include <type_traits>
 #include <algorithm>
 #include <memory>
+#include <iterator>
+#include <stdexcept>
+#include <cstdlib>
 
 namespace ft{
 

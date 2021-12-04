@@ -15,8 +15,14 @@
 #include <deque>
 //#include <map.hpp>
 //#include <stack.hpp>
-#include "vector.hpp"
 
-int main(int argc, char** argv) {
+#include "containers/vector.hpp"
+#include "ft.hpp"
 
+int main() {
+
+	ft::vector<int> vct;
+
+	vct.push(5);
+	std::cout << vct[0] << std::endl;
 }
