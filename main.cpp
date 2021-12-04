@@ -16,13 +16,12 @@
 //#include <map.hpp>
 //#include <stack.hpp>
 
-#include "containers/vector.hpp"
 #include "ft.hpp"
+#include "containers/vector.hpp"
 
 int main() {
 
-	ft::vector<int> vct();
+	ft::vector<int> vct;
 
-	vct.push_back(5);
-	std::cout << vct[0] << std::endl;
+	vct.push_back(6);
 }
