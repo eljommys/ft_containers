@@ -21,8 +21,8 @@
 
 int main() {
 
-	ft::vector<int> vct;
+	ft::vector<int> vct();
 
-	vct.push(5);
+	vct.push_back(5);
 	std::cout << vct[0] << std::endl;
 }

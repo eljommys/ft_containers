@@ -29,7 +29,7 @@ namespace ft
 		//DEREFERENCE
 		pointer &operator*() const {return _ptr}
 		pointer operator->() const {return _ptr}
-		
+
 		//INCREMENT
 		vector_iterator &operator++(){_ptr++; return *this;}
 		vector_iterator operator++(int){vector_iterator tmp(*this); _ptr++; return tmp;}
@@ -71,22 +71,40 @@ namespace ft
 		typedef std::size_t size_type;
 
 		//CONSTRUCTORS
-		vector() : _array(NULL), _size(0){}
+		vector() : _array(NULL), _size(0), _capacity(0){}
 		explicit vector(	const allocator_type& _alloc = allocator_type()) :
 							_array(NULL),
+							_capacity(0),
 							_size(0){}
 
 		explicit vector(	size_type _count,
 							const T& _value = T(),
 							const allocator_type& _alloc = allocator_type()) :
-							_size(0),
-							_array(new value_type[_count]){}
+							_size(_count),
+							_capacity(_count * 2){
+			try{
+				_array = allocator_type.allocate(size_type _capacity);
+			} catch (std::bad_alloc &e) {
+				std::cerr << e.what() << std::endl;
+				_size = 0;
+				_capacity = 0;
+				return ;
+			}
+		}
 
 		template< class InputIt >
-		vector(	InputIt _first, InputIt _last, 
+		vector(	InputIt _first, InputIt _last,
 				const allocator_type& _alloc = allocator_type() ) :
-				_size(_last - _first){
-			_array = new value_type[_size];
+				_size(_last - _first),
+				_capacity(_size * 2){
+			try{
+				_array = allocator_type.allocate();
+			} catch (std::bad_alloc &e) {
+				std::cerr << e.what() << std::endl;
+				_size = 0;
+				_capacity = 0;
+				return ;
+			}
 			for (size_type i = 0; i < _size; i++){
 				_array[i] = _first;
 				_first++;
@@ -95,22 +113,44 @@ namespace ft
 
 		vector(	const vector& _other ) :
 				_size(_other.size()),
-				array(new value_type[_other.size()]){
+				_capacity(other.capacity()){
+			try{
+				_array = allocator_type.allocate(_other.size());
+			} catch (std::bad_alloc &e) {
+				_size = 0;
+				_capacity = 0;
+				std::cerr << e.what() << std::endl;
+				return ;
+			}
 			for (size_type i = 0; i < _other.size(); i++)
 				_array[i] = _other[i];
 		}
 
 		//DESTRUCTOR
 		~vector() {
-			delete[] _array;
+			if (_array && new_capacity != _capacity)
+				allocator_type.deallocate(_array, _capacity);
 		}
 
 		//OPERATOR OVERLOADS
 		vector	&operator=(const vector &_other) {
-			_size = other.size();
+			size_type	new_size = other.size();
+			size_type	new_capacity = other.capacity();
+			pointer		new_array;
 
-			delete[] _array;
-			_array = new value_type[_size];
+			try{
+				new_array = allocator_type.allocate(new_capacity);
+			} catch (std::bad_alloc() &e) {
+				std::cerr << e.what() << std::endl;
+				return ;
+			}
+
+			if (_array && new_capacity != _capacity)
+				allocator_type.deallocate(_array, new_capacity);
+			_array = new_array;
+			_size = new_size;
+			_capacity = new_capacity;
+
 			for (size_type i = 0; i < _size; i++)
 				_array[i] = _other[i];
 			return *this;
@@ -118,19 +158,53 @@ namespace ft
 
 		//ASSIGN
 		void assign( size_type _count, const T& _value ){
-			delete[] _array;
-			_size = _count;
 
-			_array = new value_type[_size];
+			size_type new_size = _size + _count;
+			size_type new_capacity = _capacity;
+			pointer new_array;
+
+			if (new_size >= new_capacity) {
+				new_capacity *= 2;
+				try{
+					new_array = allocator_type.allocate(new_capacity);
+				} catch (std::bad_alloc() &e) {
+					std::cerr << e.what() << std::endl;
+					return;
+				}
+			}
+
+			if (_array && new_capacity != _capacity)
+				allocator_type.deallocate(_array, _capacity);
+			_array = new_array;
+			_size = new_size;
+			_capacity = new_capacity;
+
 			for (size_type = 0; i < _size; i++)
 				_array[i++] = _value;
 		}
 
 		template< class InputIt >
 		void assign( InputIt _first, InputIt _last ){
-			delete[] _array;
-			_size = _last - _first;
-			_array = new value_type[_size];
+			size_type new_size = _last - _first;
+			size_type new_capacity = _capacity;
+			pointer new_array;
+
+			if (new_size >= new_capacity) {
+				new_capacity *= 2;
+				try{
+					new_array = allocator_type.allocate(new_capacity);
+				} catch (std::bad_alloc() &e) {
+					std::cerr << e.what() << std::endl;
+					return ;
+				}
+			}
+
+			if (_array && new_capacity != _capacity)
+				allocator_type.deallocate(_array, _capacity);
+			_array = new_array;
+			_size = new_size;
+			_capacity = new_capacity;
+
 			for (size_type i = 0; i < _size; i++){
 				_array[i] = _first;
 				_first++;
@@ -175,24 +249,185 @@ namespace ft
 		size_type size() const {return _size;}
 		size_type max_size() const {return std::distance(begin(), end());}
 
+		//RESERVE
 		void reserve(size_type _new_cap){
 			if (_new_cap <= _capacity)
 				return ;
 			if (_new_cap > max_size())
 				throw std::length_error;
-			_capacity = _new_cap;
-			_array = realloc(_array, _capacity);
+
+			pointer new_array;
+			try {
+				new_array = allocator_type.allocate(_new_cap);
+			} catch (std::bad_alloc &e) {
+				throw e;
+				return;
+			}
+
+			for (size_type i = 0; i < _size; i++)
+				new_array[i] = _array[i];
+			if (_array && new_capacity != _capacity)
+				allocator_type.deallocate(_array);
+			_array = new_array;
 		}
 
 		size_type capacity() const {return _capacity;}
-		void clear() {delete[] _array; _size = 0;}
+		void clear() {erase(begin(), end());}
 
 		//INSERT
 		iterator insert( iterator pos, const T& value ) {
-			for (size_type i = _size - 1; pos <= i ; i--) //TODO: gestionar capacity (puede dar seg fault todavia)
-				_array[i + 1] = _array[i];
-			_array[pos - begin()] = value;
-			_size++;
+			size_type	new_size = _size + 1;
+			size_type	new_capacity = _capacity;
+			pointer		new_array = _array;
+
+			if (new_size >= new_capacity) {
+				new_capacity *= 2;
+				try {
+					new_array = allocator_type.allocate(new_capacity);
+				} catch (std::bad_alloc &e) {
+					std::cerr << e.what() << std::endl;
+					return ;
+				}
+				for (size_type i = 0; i < _size; i++)
+					new_array[i] = _array[i];
+			}
+
+			_size = new_size;
+			_capacity = new_capacity;
+			if (_array && new_capacity != _capacity)
+				allocator_type.deallocate(_array);
+			_array = new_array;
+
+			for (iterator i = end(); pos < i ; i--)
+				_array[i] = _array[i - 1];
+			_array[pos] = value;
+		}
+
+		//ERASE
+		iterator erase( iterator pos ) {		//TODO: gestionar iteradores no validos, probablemente de leaks
+			iterator ret(*pos);
+
+			for (pos; pos < end(); pos++)
+				_array[pos] = _array[pos + 1];
+			_size--;
+			*pos = NULL;
+			return ret;
+		}
+
+		iterator erase( iterator first, iterator last ) {
+			iterator ret(*first);
+
+			for(first; first < last; first++)
+				_array[pos] = _array[pos + 1];
+			_size -= last - first;
+			*first = NULL;
+			*last = NULL;
+			return ret;
+		}
+
+		//PUSH BACK
+		void push_back( const T& value ) {		//TODO: gestionar iteradores no validos
+			size_type	new_size = _size + 1;
+			size_type	new_capacity = _capacity;
+			pointer		new_array = _array;
+
+			if (new_size >= new_capacity){
+				new_capacity *= 2;
+				try {
+					new_array = allocator_type.allocate(new_capacity);
+				} catch (std::bad_alloc &e)  {
+					std::cerr << e.what() << std::endl;
+					return ;
+				}
+				for (pos i = 0; i < _size; i++)
+					new_array[i] = _array[i];
+			}
+
+			if (_array && new_capacity != _capacity)
+				allocator_type.deallocate(_array);
+			_size = new_size;
+			_capacity = new_capacity;
+
+			_array[_size - 1] = value;
+		}
+
+		//POP BACK
+		void pop_back() {
+			if (!_size)
+				return ;
+			_size--;
+			_array[size] = NULL;
+		}
+
+		//RESIZE
+		void resize( size_type count, T value = T() ){ //TODO: posiblemente haya que gestionar count > _cappacity
+			for (size_type i = 0; i < _size; i++)
+				_array[i] = value;
+			_size = count;
+		}
+
+		void swap( vector& other ) {
+			value_type aux;
+
+			for (size_type i = 0; i < _size && i < other.size(); i++){
+				aux = _array[i];
+				_array[i] = other[i];
+				other[i] = aux;
+			}
+			if (i > _size && i < other.size()){
+				while (i < other.size()){
+					push_back(other[i])
+					other[i] = NULL;
+				}
+			} else if (i > other.size() && i < _size){
+				while (i < _size) {
+					other.push_back(_array[i]);
+					_array[i] = NULL;
+				}
+			}
+
+		}
+
+		//NON MEMBER FUNCTIONS
+		template< class T, class Alloc >
+		bool operator==(	const vector<T,Alloc>& lhs,
+							const vector<T,Alloc>& rhs ) {
+			if (lhs != rhs)
+				return false;
+			for (size_type i = 0; i < lhs.size(); i++)
+				if (lhs[i] != rhs[i])
+					return false;
+			return true;
+		}
+
+		template< class T, class Alloc >
+		bool operator!=(	const vector<T,Alloc>& lhs,
+							const vector<T,Alloc>& rhs ) {
+			return !(lhs == rhs);
+		}
+
+		template< class T, class Alloc >
+		bool operator<(	const std::vector<T,Alloc>& lhs,
+						const std::vector<T,Alloc>& rhs ) {
+			return ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+		}
+
+		template< class T, class Alloc >
+		bool operator<=(	const std::vector<T,Alloc>& lhs,
+							const std::vector<T,Alloc>& rhs ) {
+			return !(lhs < rhs);
+		}
+
+		template< class T, class Alloc >
+		bool operator>(	const std::vector<T,Alloc>& lhs,
+						const std::vector<T,Alloc>& rhs ) {
+			return (lhs < rhs);
+		}
+
+		template< class T, class Alloc >
+		bool operator>=(	const std::vector<T,Alloc>& lhs,
+							const std::vector<T,Alloc>& rhs ) {
+			return !(lhs < rhs);
 		}
 
 		private:
@@ -203,4 +438,4 @@ namespace ft
 
 };
 
-//TODO: usar std::alocator en lugar de new y delete
+//TODO: reimplementar NULL (NULL es de C++11)
