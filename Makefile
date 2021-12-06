@@ -13,6 +13,9 @@ all: $(NAME)
 $(NAME):
 	$(CXX) $(CXXFLAGS) $(SRCS) -o $(NAME)
 
+clean:
+	rm -rf $(NAME)
+
 git:
 	git add .
 	git commit -m "$(MSG)"
