@@ -41,11 +41,11 @@ namespace ft{
 
 	template <typename Iter>
 	struct iterator_traits {
-		typename Iter::difference_type difference_type;
-		typename Iter::value_type value_type;
-		typename Iter::pointer pointer;
-		typename Iter::reference reference;
-		typename Iter::iterator_category iterator_category;
+		typedef ptrdiff_t					difference_type;
+		typedef Iter						value_type;
+		typedef Iter*						pointer;
+		typedef Iter&						reference;
+		typedef random_access_iterator_tag	iterator_category;
 	};
 
 	template <typename T>
