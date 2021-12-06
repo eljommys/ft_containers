@@ -1,22 +1,36 @@
+ROOT = ./test_srcs/
+
 NAME = test
 
 CXX = g++
-CXXFLAGS = -Wall -Werror -Wextra
+CXXFLAGS = -fsanitize=address -g3 -Wall -Werror -Wextra
 
-SRCS = main.cpp
+SRC =	$(ROOT)main.cpp \
+		$(ROOT)exec.cpp \
+		$(ROOT)vector_test.cpp\
+
+OBJ =	$(SRC:.cpp=.o)
 
 MSG = Default commit message
 #MSG="message" to change message
 
 all: $(NAME)
 
-$(NAME):
-	$(CXX) $(CXXFLAGS) $(SRCS) -o $(NAME)
+$(NAME): $(OBJ)
+	@$(CXX) $(CXXFLAGS) $(OBJ) -o $(NAME)
 
 clean:
-	rm -rf $(NAME)
+	@rm -rf $(NAME)
+
+fclean: clean
+	@rm -rf $(OBJ)
+
+re: fclean $(NAME)
+
+t:
+	@./$(NAME)
 
 git:
-	git add .
-	git commit -m "$(MSG)"
+	@git add .
+	@git commit -m "$(MSG)"
 	git push

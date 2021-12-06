@@ -189,15 +189,12 @@ namespace ft
 			if (_capacity) {
 				for (size_type i = 0; i < _size; i++)
 					_allocator.destroy(&_array[i]);
-				_allocator.deallocate(_array, _capacity);
+				_allocator.deallocate(_array, _capacity + 1);
 			}
 		}
 
 		//OPERATOR OVERLOADS
 		vector	&operator=(const vector &_other) {
-			_capacity = _other.capacity();
-			_size = _other.size();
-			clear();
 			assign(_other.begin(), _other.end());
 			return *this;
 		}
@@ -216,8 +213,6 @@ namespace ft
 		template< class InputIt >
 		void assign( InputIt _first, InputIt _last ){
 			clear();
-			_end = _begin;
-			reserve(_last - _first);
 			for (; _first < _last; _first++)
 				push_back(*_first);
 		}
@@ -297,32 +292,8 @@ namespace ft
 
 		//INSERT
 		iterator insert( iterator pos, const T& value ) {
-			size_type	new_size = _size + 1;
-			size_type	new_capacity = _capacity;
-			pointer		new_array = _array;
-
-			if (new_size >= new_capacity) {
-				new_capacity = _capacity + new_size;
-				try {
-					new_array = _allocator.allocate(new_capacity + 1);
-				} catch (std::bad_alloc &e) {
-					std::cerr << e.what() << std::endl;
-					return iterator(NULL);
-				}
-				for (size_type i = 0; i < _size; i++)
-					new_array[i] = _array[i];
-				new_array[_size] = 0;
-			}
-
-			_size = new_size;
-			_capacity = new_capacity;
-			if (_capacity)
-				_allocator.deallocate(_array);
-			_array = new_array;
-
-			for (iterator i = end() + 1; pos < i ; i--)
-				_array[i] = _array[i - 1];
-			*pos = value;
+			//if (_size >)
+			reserve();
 		}
 
 		//ERASE
@@ -331,10 +302,12 @@ namespace ft
 				throw std::length_error("iterator not in range");
 				return (iterator(NULL));
 			}
-			_allocator.destroy(*pos);
+			_allocator.destroy(&(*pos));
 			for (size_type i = pos - _begin; i < _size; i++)
 				_array[i] = _array[i + 1];
 			_size--;
+			_end--;
+			return pos;
 		}
 
 		iterator erase( iterator first, iterator last ) {
@@ -371,9 +344,10 @@ namespace ft
 				for (size_type i = 0; i < _size; i++) {
 					new_array[i] = _array[i];
 				}
+				clear();
+				_allocator.deallocate(_array, _capacity + 1);
 			}
 
-			clear();
 			_size = new_size;
 			_capacity = new_capacity;
 			_array = new_array;
@@ -388,7 +362,7 @@ namespace ft
 				return ;
 			_size--;
 			_allocator.destroy(&_array[_size]);
-			_array[_size] = NULL;
+			_end--;
 		}
 
 		//RESIZE
@@ -396,18 +370,27 @@ namespace ft
 			for (size_type i = 0; i < _size; i++)
 				_array[i] = value;
 			_size = count;
+			_allocator.destroy(_end);
+			_end = _begin + _size;
 		}
 
-		void swap( vector& other ) {
+		void swap( vector& _other ) {
 			pointer		tmp_arr;
 			size_type	tmp_size;
 
 			tmp_arr = _array;
+			_other._array = _array;
 			tmp_size = _size;
-			other._array = _array;
-			other._size = _size;
+
+			_other._size = _size;
 			_array = tmp_arr;
 			_size = tmp_size;
+
+			_other._begin = _other._array;
+			_other._end = _other._begin + _other._size;
+
+			_begin = _array;
+			_end = _begin + _size;
 		}
 
 		private:
@@ -418,7 +401,7 @@ namespace ft
 		iterator		_begin;
 		iterator		_end;
 	};
-	
+
 	//NON MEMBER FUNCTIONS
 	template< class T, class Alloc >
 	bool operator==(	const vector<T,Alloc>& lhs,
