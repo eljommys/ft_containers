@@ -1,3 +1,5 @@
+#pragma once
+
 #include "test.hpp"
 
 template<typename T>

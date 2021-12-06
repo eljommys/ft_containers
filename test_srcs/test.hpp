@@ -18,8 +18,4 @@
 
 std::string exec(const char* cmd);
 
-template<typename T>
-void	vector_output(ft::vector<T> vct);
-
-template<typename T>
-void	vector_output(std::vector<T> vct);
+#include "vector_test.hpp"

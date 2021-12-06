@@ -7,7 +7,7 @@ CXXFLAGS = -fsanitize=address -g3 -Wall -Werror -Wextra
 
 SRC =	$(ROOT)main.cpp \
 		$(ROOT)exec.cpp \
-		$(ROOT)vector_test.cpp\
+		#$(ROOT)vector_test.cpp\
 
 OBJ =	$(SRC:.cpp=.o)
 
@@ -27,7 +27,7 @@ fclean: clean
 
 re: fclean $(NAME)
 
-t:
+t: re
 	@./$(NAME)
 
 git:

@@ -173,7 +173,7 @@ namespace ft
 				_begin(NULL),
 				_end(NULL){
 			try{
-				_array = _allocator.allocate(_other.size() + 1);
+				_array = _allocator.allocate(_capacity + 1);
 			} catch (std::bad_alloc &e) {
 				_size = 0;
 				_capacity = 0;
@@ -182,6 +182,8 @@ namespace ft
 			}
 			for (size_type i = 0; i < _other.size(); i++)
 				_array[i] = _other[i];
+			_begin = iterator(_array);
+			_end = _begin + _size;
 		}
 
 		//DESTRUCTOR
@@ -276,6 +278,7 @@ namespace ft
 			clear();
 			_size = old_size;
 			_capacity = _new_cap;
+			_allocator.deallocate(_array, _capacity + 1);
 			_array = new_array;
 			_begin = iterator(_array);
 			_end = _begin + _size;
@@ -293,7 +296,10 @@ namespace ft
 		//INSERT
 		iterator insert( iterator pos, const T& value ) {
 			//if (_size >)
-			reserve();
+			reserve(_size + 1);
+			_size++;
+			*pos = value;
+			return pos;
 		}
 
 		//ERASE
@@ -329,31 +335,11 @@ namespace ft
 
 		//PUSH BACK
 		void push_back( const T& value ) {
-			size_type	new_size = _size + 1;
-			size_type	new_capacity = _capacity;
-			pointer		new_array = _array;
 
-			if (new_size > new_capacity){
-				new_capacity = _capacity + new_size;
-				try {
-					new_array = _allocator.allocate(new_capacity + 1);
-				} catch (std::bad_alloc &e) {
-					std::cerr << e.what() << std::endl;
-					return ;
-				}
-				for (size_type i = 0; i < _size; i++) {
-					new_array[i] = _array[i];
-				}
-				clear();
-				_allocator.deallocate(_array, _capacity + 1);
-			}
-
-			_size = new_size;
-			_capacity = new_capacity;
-			_array = new_array;
+			if (_size + 1 > _capacity)
+				reserve(_size + 1);
+			_size++;
 			_array[_size - 1] = value;
-			_begin = iterator(_array);
-			_end = _begin + _size;
 		}
 
 		//POP BACK
