@@ -277,10 +277,12 @@ namespace ft
 				std::cerr << e.what() << std::endl;
 				return pos;
 			}
+			
 			_size++;
 			for (size_type i = _size; s_pos < i; i--)
 				_array[i] = _array[i - 1];
 			_array[s_pos] = value;
+
 			return iterator(_array + s_pos);
 		}
 
