@@ -3,7 +3,8 @@ ROOT = ./test_srcs/
 NAME = test
 
 CXX = g++
-CXXFLAGS = -fsanitize=address -g3 -Wall -Werror -Wextra
+#CXXFLAGS = -fsanitize=address -g3 -Wall -Werror -Wextra
+CXXFLAGS = -fsanitize=address -g3
 
 SRC =	$(ROOT)main.cpp \
 		$(ROOT)exec.cpp \

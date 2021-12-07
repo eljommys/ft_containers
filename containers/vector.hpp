@@ -120,19 +120,12 @@ namespace ft
 		explicit vector(	size_type _count,
 							const T& _value,
 							const allocator_type& _alloc) :
-							_capacity(_count),
+							_capacity(0),
 							_size(_count),
 							_allocator(_alloc),
 							_begin(NULL),
 							_end(NULL){
-			try{
-				_array = _allocator.allocate(_capacity + 1);
-			} catch (std::bad_alloc &e) {
-				std::cerr << e.what() << std::endl;
-				_size = 0;
-				_capacity = 0;
-				return ;
-			}
+			_mod_capacity(_size);
 
 			for (size_type i = 0; i < _size; i++)
 				_array[i] = _value;
@@ -144,19 +137,13 @@ namespace ft
 		template< class InputIt >
 		vector(	InputIt _first, InputIt _last,
 				const allocator_type& _alloc) :
-				_capacity(_size * 2),
+				_capacity(0),
 				_size(_last - _first),
+				_allocator(_alloc),
 				_array(NULL),
 				_begin(NULL),
 				_end(NULL){
-			try{
-				_array = _alloc.allocate(_capacity + 1);
-			} catch (std::bad_alloc &e) {
-				std::cerr << e.what() << std::endl;
-				_size = 0;
-				_capacity = 0;
-				return ;
-			}
+			_mod_capacity(_size);
 			for (size_type i = 0; i < _size; i++){
 				_array[i] = _first;
 				_first++;
@@ -215,6 +202,7 @@ namespace ft
 		template< class InputIt >
 		void assign( InputIt _first, InputIt _last ){
 			clear();
+			reserve(_last - _first);
 			for (; _first < _last; _first++)
 				push_back(*_first);
 		}
@@ -261,27 +249,13 @@ namespace ft
 		void reserve(size_type _new_cap){
 			if (_new_cap <= _capacity)
 				return ;
-			if (_new_cap >= max_size())
+			if (_new_cap > max_size())
 				throw std::length_error("reserve");
-
-			pointer new_array;
 			try {
-				new_array = _allocator.allocate(_new_cap + 1);
+				_mod_capacity(_new_cap);
 			} catch (std::bad_alloc &e) {
 				throw e;
-				return;
 			}
-
-			for (size_type i = 0; i < _size; i++)
-				new_array[i] = _array[i];
-			size_type old_size = _size;
-			clear();
-			_size = old_size;
-			_capacity = _new_cap;
-			_allocator.deallocate(_array, _capacity + 1);
-			_array = new_array;
-			_begin = iterator(_array);
-			_end = _begin + _size;
 		}
 
 		size_type capacity() const {return _capacity;}
@@ -295,11 +269,19 @@ namespace ft
 
 		//INSERT
 		iterator insert( iterator pos, const T& value ) {
-			//if (_size >)
-			reserve(_size + 1);
+			size_type s_pos = pos - _begin;
+
+			try {
+				reserve(_size + 1);
+			} catch (std::bad_alloc &e) {
+				std::cerr << e.what() << std::endl;
+				return pos;
+			}
 			_size++;
-			*pos = value;
-			return pos;
+			for (size_type i = _size; s_pos < i; i--)
+				_array[i] = _array[i - 1];
+			_array[s_pos] = value;
+			return iterator(_array + s_pos);
 		}
 
 		//ERASE
@@ -312,7 +294,7 @@ namespace ft
 			for (size_type i = pos - _begin; i < _size; i++)
 				_array[i] = _array[i + 1];
 			_size--;
-			_end--;
+			_mod_capacity(_capacity - 1);
 			return pos;
 		}
 
@@ -329,7 +311,7 @@ namespace ft
 				*first = *(first + 1);
 			}
 			_size -= diff;
-			_end -= diff;
+			_mod_capacity(_capacity - diff);
 			return ret;
 		}
 
@@ -337,7 +319,7 @@ namespace ft
 		void push_back( const T& value ) {
 
 			if (_size + 1 > _capacity)
-				reserve(_size + 1);
+				_mod_capacity(_size + 1);
 			_size++;
 			_array[_size - 1] = value;
 		}
@@ -346,9 +328,12 @@ namespace ft
 		void pop_back() {
 			if (!_size)
 				return ;
-			_size--;
-			_allocator.destroy(&_array[_size]);
-			_end--;
+			try {
+				_mod_capacity(_capacity - 1);
+			} catch (std::bad_alloc &e) {
+				std::cerr << e.what() << std::endl;
+				return ;
+			}
 		}
 
 		//RESIZE
@@ -386,6 +371,31 @@ namespace ft
 		allocator_type	_allocator;
 		iterator		_begin;
 		iterator		_end;
+
+		void			_mod_capacity(size_type new_capacity) {
+			if (new_capacity <= 0 || new_capacity == _capacity)
+				return ;
+
+			pointer new_array;
+
+			try {
+				new_array = _allocator.allocate(new_capacity + 1);
+			} catch (std::bad_alloc &e) {
+				throw e;
+				return ;
+			}
+			_size = (new_capacity < _size) ? new_capacity : _size;
+			for (size_type i = 0; i < _size; i++) {
+				new_array[i] = _array[i];
+				_allocator.destroy(&_array[i]);
+			}
+			if (_array)
+				_allocator.deallocate(_array, _capacity + 1);
+			_array = new_array;
+			_capacity = new_capacity;
+			_begin = iterator(_array);
+			_end = _begin + _size;
+		}
 	};
 
 	//NON MEMBER FUNCTIONS

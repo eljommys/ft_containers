@@ -19,6 +19,8 @@
 void	compare(){
 	std::string res = exec("diff results/stan.txt results/mine.txt");
 	if (res.length()){
+		std::cout << "< reference" << std::endl;
+		std::cout << "> mine" << std::endl;
 		std::cout << "\u274C" << std::endl;
 		std::cout << res << std::endl;
 	}
@@ -35,9 +37,9 @@ int main() {
 	std::vector<int> his_vct;
 	ft::vector<int> my_vct;
 
-	for (int i = 0; i < 10; i++){
+	std::cout << "push back " << 20 << std::endl;
+	for (int i = 0; i < 20; i++){
 		his_vct.push_back(i); my_vct.push_back(i);
-		std::cout << "push back " << i << std::endl;
 	}
 
 	vector_output(my_vct); vector_output(his_vct);
@@ -60,7 +62,7 @@ int main() {
 	compare();
 
 	std::cout << "insert in 3, 14" << std::endl;
-	his_vct.insert(his_vct.begin() + 3, 14); my_vct.insert(my_vct.begin() + 3, 14);
+	his_vct.insert(his_vct.begin() + 2, 14); my_vct.insert(my_vct.begin() + 2, 14);
 	vector_output(his_vct); vector_output(my_vct);
 	compare();
 
