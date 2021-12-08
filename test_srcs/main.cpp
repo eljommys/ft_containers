@@ -37,6 +37,9 @@ int main() {
 	std::vector<int> his_vct;
 	ft::vector<int> my_vct;
 
+	ft::vector<int> tmp_my_vct;
+	std::vector<int> tmp_his_vct;
+
 	std::cout << "push back " << 20 << std::endl;
 	for (int i = 0; i < 20; i++){
 		his_vct.push_back(i); my_vct.push_back(i);
@@ -47,13 +50,12 @@ int main() {
 
 	std::cout << std::endl;
 
+	std::cout << "pop back" << std::endl;
 	for (int i = 0; i < 2; i++){
 		his_vct.pop_back(); my_vct.pop_back();
-		std::cout << "pop back" << std::endl;
+		vector_output(my_vct); vector_output(his_vct);
+		compare();
 	}
-	vector_output(my_vct); vector_output(his_vct);
-	compare();
-
 	std::cout << std::endl;
 
 	std::cout << "erase 3" << std::endl;
@@ -72,12 +74,9 @@ int main() {
 	std::cout << std::endl;
 
 	std::cout << "swap" << std::endl;
-	ft::vector<int> tmp_my_vct;
-	std::vector<int> tmp_his_vct;
 	for (int i = 20; 0 > i; i--){
 		tmp_my_vct.push_back(i); tmp_his_vct.push_back(i);
 	}
-
 	tmp_my_vct.swap(my_vct); tmp_his_vct.swap(his_vct);
 	vector_output(tmp_his_vct); vector_output(tmp_my_vct);
 	compare();
