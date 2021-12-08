@@ -84,7 +84,6 @@ namespace ft
 		return &(*a) - &(*b);
 	}
 
-
 	template < class T, class Alloc = std::allocator<T> >
 	class vector{
 		public:
@@ -130,7 +129,7 @@ namespace ft
 				_array[i] = _value;
 			_array[_size] = NULL;
 			_begin = iterator(_array);
-			_end = iterator(&_array[_size]);
+			_end = _begin + _size;
 		}
 
 		template< class InputIt >
@@ -149,7 +148,7 @@ namespace ft
 			}
 			_array[_size] = NULL;
 			_begin = iterator(_array);
-			_end = iterator(&_array[_size]);
+			_end = _begin + _size;
 		}
 
 		vector(	const vector& _other ) :
@@ -174,7 +173,7 @@ namespace ft
 
 		//DESTRUCTOR
 		~vector() {
-			if (_capacity) {
+			if (_array) {
 				for (size_type i = 0; i < _size; i++)
 					_allocator.destroy(&_array[i]);
 				_allocator.deallocate(_array, _capacity + 1);
@@ -352,18 +351,22 @@ namespace ft
 			size_type	tmp_size;
 
 			tmp_arr = _array;
-			_other._array = _array;
+			_array = _other._array;
+			_other._array = tmp_arr;
+
 			tmp_size = _size;
+			_size = _other._size;
+			_other._size = tmp_size;
 
-			_other._size = _size;
-			_array = tmp_arr;
-			_size = tmp_size;
+			tmp_size = _capacity;
+			_capacity = _other._capacity;
+			_other._capacity = tmp_size;
 
-			_other._begin = _other._array;
-			_other._end = _other._begin + _other._size;
-
-			_begin = _array;
+			_begin = iterator(_array);
 			_end = _begin + _size;
+
+			_other._begin = iterator(_other._array);
+			_other._end = _other._begin + _other._size;
 		}
 
 		private:

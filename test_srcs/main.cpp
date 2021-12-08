@@ -25,7 +25,7 @@ void	compare(){
 		std::cout << res << std::endl;
 	}
 	else
-		std::cout << "\u2705" << std::endl;
+		std::cout << "\u2705";
 }
 
 int main() {
@@ -60,11 +60,38 @@ int main() {
 	his_vct.erase(his_vct.begin() + 3); my_vct.erase(my_vct.begin() + 3);
 	vector_output(his_vct); vector_output(my_vct);
 	compare();
+	std::cout << std::endl;
 
-	std::cout << "insert in 3, 14" << std::endl;
+	std::cout << "insert in 14 in 3" << std::endl;
 	his_vct.insert(his_vct.begin() + 16, 14); my_vct.insert(my_vct.begin() + 16, 14);
 	vector_output(his_vct); vector_output(my_vct);
 	compare();
+	his_vct.insert(his_vct.begin() + 16, 14); my_vct.insert(my_vct.begin() + 16, 14);
+	vector_output(his_vct); vector_output(my_vct);
+	compare();
+	std::cout << std::endl;
+
+	std::cout << "swap" << std::endl;
+	ft::vector<int> tmp_my_vct;
+	std::vector<int> tmp_his_vct;
+	for (int i = 20; 0 > i; i--){
+		tmp_my_vct.push_back(i); tmp_his_vct.push_back(i);
+	}
+
+	tmp_my_vct.swap(my_vct); tmp_his_vct.swap(his_vct);
+	vector_output(tmp_his_vct); vector_output(tmp_my_vct);
+	compare();
+	vector_output(his_vct); vector_output(my_vct);
+	compare();
+	std::cout << std::endl;
+
+	std::cout << "operator=" << std::endl;
+	tmp_his_vct = his_vct; tmp_my_vct = my_vct;
+	vector_output(tmp_my_vct); vector_output(tmp_his_vct);
+	compare();
+	vector_output(my_vct); vector_output(his_vct);
+	compare();
+	std::cout << std::endl;
 
 	return 0;
 }
