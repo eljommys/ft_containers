@@ -31,7 +31,7 @@ re: fclean $(NAME)
 t: re
 	@./$(NAME)
 
-git:
+git: fclean
 	@git add .
 	@git commit -m "$(MSG)"
 	git push
