@@ -36,10 +36,12 @@ int main() {
 	std::cout << "╚═══════════════════════════════════════════════════╝" << std::endl;
 	std::cout << std::endl;
 
-	std::cout << "\u142F\u4E47\u531A\u3112\u3116\u5C3A" << std::endl;
+	std::cout << "╔═══════════╗" << std::endl;
+	std::cout << "║\u142F\u4E47\u531A\u3112\u3116\u5C3A║" << std::endl;
+	std::cout << "╚═══════════╝" << std::endl;
 	std::cout << std::endl;
 
-	std::cout << "Modifier methods" << std::endl;
+	std::cout << "[MODIFIER METHODS]" << std::endl;
 
 	std::vector<int> his_vct;
 	ft::vector<int> my_vct;
