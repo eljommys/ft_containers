@@ -1,37 +1,24 @@
-ROOT = ./test_srcs/
+all:
+	chmod 777 init.sh
+	./init.sh
 
-NAME = test
+vector:
+	./containers_test/do.sh vector
+	
+stack:
+	./containers_test/do.sh stack
 
-CXX = g++
-#CXXFLAGS = -fsanitize=address -g3 -Wall -Werror -Wextra
-CXXFLAGS = -fsanitize=address -g3
-
-SRC =	$(ROOT)main.cpp \
-		$(ROOT)exec.cpp \
-		#$(ROOT)vector_test.cpp\
-
-OBJ =	$(SRC:.cpp=.o)
-
-MSG = Default commit message
-#MSG="message" to change message
-
-all: $(NAME)
-
-$(NAME): $(OBJ)
-	@$(CXX) $(CXXFLAGS) $(OBJ) -o $(NAME)
+map:
+	./containers_test/do.sh vector
 
 clean:
-	@rm -rf $(NAME)
+	@rm -rf containers_test
 
-fclean: clean
-	@rm -rf $(OBJ)
+re: all clean
 
-re: fclean $(NAME)
-
-t: re
-	@./$(NAME)
-
-git: fclean
+git: clean
 	@git add .
 	@git commit -m "$(MSG)"
 	git push
+
+.PHONY: all clean re git
