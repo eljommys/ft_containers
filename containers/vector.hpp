@@ -80,9 +80,8 @@ namespace ft
 
 	//DIFFERENCE
 	template <class It>
-	typename ft::random_access_iterator<It>::difference_type
-	operator- ( const ft::random_access_iterator<It>& a , const ft::random_access_iterator<It>&b ) {
-		return *a - *b;
+	int	operator- ( const ft::random_access_iterator<It>& a , const ft::random_access_iterator<It>&b ) {
+		return &(*a) - &(*b);
 	}
 
 
@@ -277,10 +276,11 @@ namespace ft
 				std::cerr << e.what() << std::endl;
 				return pos;
 			}
-			
+
 			_size++;
-			for (size_type i = _size; s_pos < i; i--)
+			for (size_type i = _size; s_pos < i; i--) {
 				_array[i] = _array[i - 1];
+			}
 			_array[s_pos] = value;
 
 			return iterator(_array + s_pos);

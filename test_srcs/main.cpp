@@ -62,7 +62,7 @@ int main() {
 	compare();
 
 	std::cout << "insert in 3, 14" << std::endl;
-	his_vct.insert(his_vct.begin() + 2, 14); my_vct.insert(my_vct.begin() + 2, 14);
+	his_vct.insert(his_vct.begin() + 16, 14); my_vct.insert(my_vct.begin() + 16, 14);
 	vector_output(his_vct); vector_output(my_vct);
 	compare();
 
