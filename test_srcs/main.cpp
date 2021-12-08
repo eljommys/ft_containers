@@ -30,9 +30,16 @@ void	compare(){
 
 int main() {
 
-	std::cout << "╔════════════════════╗" << std::endl;
-	std::cout << "║ ft_containers test ║" << std::endl;
-	std::cout << "╚════════════════════╝" << std::endl;
+	std::cout << "╔═══════════════════════════════════════════════════╗" << std::endl;
+	std::cout << "║ \u2592\u2588\u2580\u2591\u2580\u2588\u2580\u2591\u2591\u2591\u2584\u2580\u2580\u2591\u2584\u2580\u2584\u2591\u2588\u2584\u2591\u2588\u2591\u2580\u2588\u2580\u2592\u2584\u2580\u2584\u2591\u2588\u2591\u2588\u2584\u2591\u2588\u2592\u2588\u2588\u2580\u2592\u2588\u2580\u2584\u2591\u2584\u2580\u2580 ║" << std::endl;
+	std::cout << "║ \u2591\u2588\u2580\u2591\u2592\u2588\u2592\u2592\u2591\u2591\u2580\u2584\u2584\u2591\u2580\u2584\u2580\u2591\u2588\u2592\u2580\u2588\u2591\u2592\u2588\u2592\u2591\u2588\u2580\u2588\u2591\u2588\u2591\u2588\u2592\u2580\u2588\u2591\u2588\u2584\u2584\u2591\u2588\u2580\u2584\u2592\u2584\u2588\u2588 ║" << std::endl;
+	std::cout << "╚═══════════════════════════════════════════════════╝" << std::endl;
+	std::cout << std::endl;
+
+	std::cout << "\u142F\u4E47\u531A\u3112\u3116\u5C3A" << std::endl;
+	std::cout << std::endl;
+
+	std::cout << "Modifier methods" << std::endl;
 
 	std::vector<int> his_vct;
 	ft::vector<int> my_vct;
@@ -74,7 +81,7 @@ int main() {
 	std::cout << std::endl;
 
 	std::cout << "swap" << std::endl;
-	for (int i = 20; 0 > i; i--){
+	for (int i = 20; 0 < i; i--){
 		tmp_my_vct.push_back(i); tmp_his_vct.push_back(i);
 	}
 	tmp_my_vct.swap(my_vct); tmp_his_vct.swap(his_vct);
@@ -88,6 +95,12 @@ int main() {
 	tmp_his_vct = his_vct; tmp_my_vct = my_vct;
 	vector_output(tmp_my_vct); vector_output(tmp_his_vct);
 	compare();
+	vector_output(my_vct); vector_output(his_vct);
+	compare();
+	std::cout << std::endl;
+
+	std::cout << "clear" << std::endl;
+	my_vct.clear(); his_vct.clear();
 	vector_output(my_vct); vector_output(his_vct);
 	compare();
 	std::cout << std::endl;

@@ -263,6 +263,12 @@ namespace ft
 			if (!_size)
 				return;
 			erase(begin(), end());
+			if (_array)
+				_allocator.deallocate(_array, _capacity + 1);
+			_array = NULL;
+			_capacity = 0;
+			_begin = iterator(NULL);
+			_end = _begin;
 		}
 
 		//INSERT

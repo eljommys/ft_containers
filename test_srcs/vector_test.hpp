@@ -10,6 +10,7 @@ void	vector_output(ft::vector<T> vct) {
 	file << "┌──────────VECTOR────────────┐" << std::endl;
 	file << "├─" << "size = " << vct.size() << std::endl;
 	file << "├─" << "capacity = " << vct.capacity() << std::endl;
+	file << "├─" << "empty = " << vct.empty() << std::endl;
 	//file << "├─" << "begin = " << &(*vct.begin()) << std::endl;
 	//file << "├─" << "end = " << &(*vct.end()) << std::endl;
 	file << "├─" << "[";
@@ -31,6 +32,7 @@ void	vector_output(std::vector<T> vct) {
 	file << "┌──────────VECTOR────────────┐" << std::endl;
 	file << "├─" << "size = " << vct.size() << std::endl;
 	file << "├─" << "capacity = " << vct.capacity() << std::endl;
+	file << "├─" << "empty = " << vct.empty() << std::endl;
 	//file << "├─" << "begin = " << &(*vct.begin()) << std::endl;
 	//file << "├─" << "end = " << &(*vct.end()) << std::endl;
 	file << "├─" << "[";
