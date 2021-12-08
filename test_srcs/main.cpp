@@ -52,10 +52,9 @@ int main() {
 	std::cout << "push back " << 20 << std::endl;
 	for (int i = 0; i < 20; i++){
 		his_vct.push_back(i); my_vct.push_back(i);
+		vector_output(my_vct); vector_output(his_vct);
+		compare();
 	}
-
-	vector_output(my_vct); vector_output(his_vct);
-	compare();
 
 	std::cout << std::endl;
 
