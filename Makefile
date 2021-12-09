@@ -1,20 +1,25 @@
+MSG=Default commit message
+
 all:
 	chmod 777 init.sh
 	./init.sh
 
 vector:
-	./containers_test/do.sh vector
+	cd containers_test ; ./do.sh vector
 	
 stack:
-	./containers_test/do.sh stack
+	cd containers_test ; ./do.sh stack
 
 map:
-	./containers_test/do.sh vector
+	cd containers_test ; ./do.sh vector
 
 clean:
 	@rm -rf containers_test
 
 re: all clean
+
+do:
+	cd containers_test ; ./one ../vector.hpp
 
 git: clean
 	@git add .

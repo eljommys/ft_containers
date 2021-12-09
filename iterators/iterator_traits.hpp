@@ -2,7 +2,11 @@
 
 #include "iterators.hpp"
 
+
 namespace ft{
+	
+struct random_access_iterator_tag;
+
 template <typename Iter>
 	struct iterator_traits {
 		typedef ptrdiff_t						difference_type;
