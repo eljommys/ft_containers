@@ -4,7 +4,7 @@ all:
 	chmod 777 init.sh
 	./init.sh
 
-vector:
+vector: all
 	cd containers_test ; ./do.sh vector
 	
 stack:

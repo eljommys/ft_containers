@@ -20,24 +20,18 @@ namespace ft {
 		typedef std::size_t size_type;
 
 		//CONSTRUCTORS
-		vector() :	_capacity(0),
-					_size(0),
-					_array(NULL),
-					_allocator(allocator_type()),
-					_begin(NULL),
-					_end(NULL){}
-		explicit vector(	const allocator_type& _alloc) :
-							_array(NULL),
+		explicit vector(	const allocator_type& _alloc = allocator_type()) :
 							_capacity(0),
 							_size(0),
+							_array(NULL),
 							_allocator(_alloc),
 							_begin(NULL),
 							_end(NULL){}
 
 		explicit vector(	size_type _count,
-							const T& _value,
-							const allocator_type& _alloc) :
-							_capacity(0),
+							const T& _value = value_type(),
+							const allocator_type& _alloc = allocator_type()) :
+							_capacity(_count),
 							_size(_count),
 							_allocator(_alloc),
 							_begin(NULL),
@@ -46,7 +40,6 @@ namespace ft {
 
 			for (size_type i = 0; i < _size; i++)
 				_array[i] = _value;
-			_array[_size] = NULL;
 			_begin = iterator(_array);
 			_end = _begin + _size;
 		}
@@ -54,10 +47,10 @@ namespace ft {
 		template< class InputIt >
 		vector(	InputIt _first, InputIt _last,
 				const allocator_type& _alloc) :
-				_capacity(0),
-				_size(_last - _first),
-				_allocator(_alloc),
+				_capacity(_last - _first),
+				_size(_capacity),
 				_array(NULL),
+				_allocator(_alloc),
 				_begin(NULL),
 				_end(NULL){
 			_mod_capacity(_size);
@@ -65,7 +58,6 @@ namespace ft {
 				_array[i] = _first;
 				_first++;
 			}
-			_array[_size] = NULL;
 			_begin = iterator(_array);
 			_end = _begin + _size;
 		}
@@ -77,7 +69,7 @@ namespace ft {
 				_begin(NULL),
 				_end(NULL){
 			try{
-				_array = _allocator.allocate(_capacity + 1);
+				_array = _allocator.allocate(_capacity);
 			} catch (std::bad_alloc &e) {
 				_size = 0;
 				_capacity = 0;
@@ -95,7 +87,7 @@ namespace ft {
 			if (_array) {
 				for (size_type i = 0; i < _size; i++)
 					_allocator.destroy(&_array[i]);
-				_allocator.deallocate(_array, _capacity + 1);
+				_allocator.deallocate(_array, _capacity);
 			}
 		}
 
@@ -120,8 +112,9 @@ namespace ft {
 		void assign( InputIt _first, InputIt _last ){
 			clear();
 			reserve(_last - _first);
-			for (; _first < _last; _first++)
+			for (; _first < _last; _first++){
 				push_back(*_first);
+			}
 		}
 
 		allocator_type get_allocator() const {return _allocator;}
@@ -184,7 +177,7 @@ namespace ft {
 			for (size_type i = 0; i < _size; i++)
 				_allocator.destroy(&(_array[i]));
 			if (_array)
-				_allocator.deallocate(_array, _capacity + 1);
+				_allocator.deallocate(_array, _capacity);
 			_array = NULL;
 			_size = 0;
 			_capacity = 0;
@@ -204,9 +197,8 @@ namespace ft {
 			}
 
 			_size++;
-			for (size_type i = _size; s_pos < i; i--) {
+			for (size_type i = _size; s_pos < i; i--)
 				_array[i] = _array[i - 1];
-			}
 			_array[s_pos] = value;
 
 			return iterator(_array + s_pos);
@@ -312,7 +304,7 @@ namespace ft {
 			pointer new_array;
 
 			try {
-				new_array = _allocator.allocate(new_capacity + 1);
+				new_array = _allocator.allocate(new_capacity);
 			} catch (std::bad_alloc &e) {
 				throw e;
 				return ;
@@ -323,7 +315,7 @@ namespace ft {
 				_allocator.destroy(&_array[i]);
 			}
 			if (_array)
-				_allocator.deallocate(_array, _capacity + 1);
+				_allocator.deallocate(_array, _capacity);
 			_array = new_array;
 			_capacity = new_capacity;
 			_begin = iterator(_array);

@@ -13,6 +13,10 @@
 #include "reverse_iterator.hpp"
 #include "random_access_iterator.hpp"
 
+#ifndef NULL
+# define NULL (void *)0;
+#endif
+
 namespace ft {
 	struct input_iterator_tag { };
 	struct output_iterator_tag { };
