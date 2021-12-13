@@ -126,8 +126,16 @@ namespace ft {
 		allocator_type get_allocator() const {return _allocator;}
 
 		//AT
-		reference	at( size_type pos ) {return _array[pos];}
-		const_reference at( size_type pos ) const {return _array[pos];}
+		reference	at( size_type pos ) {
+			if (pos >= _size)
+				throw std::out_of_range("out of range");
+			return _array[pos];
+		}
+		const_reference at( size_type pos ) const {
+			if (pos >= _size)
+				throw std::out_of_range("out of range");
+			return _array[pos];
+		}
 
 		//DEREFERENCE OPERATOR
 		reference	operator[](size_type pos) {return _array[pos];}
@@ -168,7 +176,7 @@ namespace ft {
 			if (_new_cap > max_size())
 				throw std::length_error("reserve");
 			try {
-				_mod_capacity(_new_cap);
+				_mod_capacity(_capacity * 2);
 			} catch (std::bad_alloc &e) {
 				throw e;
 			}
@@ -182,12 +190,12 @@ namespace ft {
 				return;
 			for (size_type i = 0; i < _size; i++)
 				_allocator.destroy(&(_array[i]));
-			if (_array)
+			/* if (_array)
 				_allocator.deallocate(_array, _capacity);
-			_array = NULL;
+			_array = NULL; */
 			_size = 0;
-			_capacity = 0;
-			_begin = iterator(NULL);
+			//_capacity = 0;
+			//_begin = iterator(NULL);
 			_end = _begin;
 		}
 
@@ -220,7 +228,7 @@ namespace ft {
 			for (size_type i = pos - _begin; i < _size; i++)
 				_array[i] = _array[i + 1];
 			_size--;
-			_mod_capacity(_capacity - 1);
+			//_mod_capacity(_capacity - 1);
 			return pos;
 		}
 
@@ -249,18 +257,22 @@ namespace ft {
 				_mod_capacity(_size + 1);
 			_size++;
 			_array[_size - 1] = value;
+			_end++;
 		}
 
 		//POP BACK
 		void pop_back() {
 			if (!_size)
 				return ;
-			try {
+			/* try {
 				_mod_capacity(_capacity - 1);
 			} catch (std::bad_alloc &e) {
 				std::cerr << e.what() << std::endl;
 				return ;
-			}
+			} */
+			_allocator.destroy(_array[_size - 1]);
+			_size--;
+			_end--;
 		}
 
 		//RESIZE
@@ -268,7 +280,7 @@ namespace ft {
 			for (size_type i = 0; i < _size; i++)
 				_array[i] = value;
 			_size = count;
-			_allocator.destroy(_end);
+			//_allocator.destroy(_end);
 			_end = _begin + _size;
 		}
 
