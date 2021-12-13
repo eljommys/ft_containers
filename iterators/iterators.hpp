@@ -9,6 +9,8 @@
 #include <cstdlib>
 #include <iostream>
 
+#include <stdio.h>
+
 #include "iterator_traits.hpp"
 #include "reverse_iterator.hpp"
 #include "random_access_iterator.hpp"

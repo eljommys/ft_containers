@@ -3,8 +3,7 @@
 #include "iterators.hpp"
 
 namespace ft {
-	template <	typename T, typename Distance = ptrdiff_t,
-				typename Pointer = T*, typename Reference = T&>
+	template < typename T>
 	struct random_access_iterator{
 
 		typedef T																	iterator_type;
@@ -18,7 +17,7 @@ namespace ft {
 		random_access_iterator() : _ptr(NULL){}
 		random_access_iterator(pointer _val) : _ptr(_val) {}
 		template<class U>
-		random_access_iterator(const random_access_iterator<U>& other): _ptr(*other){}
+		random_access_iterator(const random_access_iterator<U>& other): _ptr(other.base()){}
 		template<class U>
 		random_access_iterator& operator=(const random_access_iterator<U>& other){_ptr = *other; return *this;}
 		~random_access_iterator() {};
@@ -47,7 +46,9 @@ namespace ft {
 		//OFFSET DEREFERENCE
 		pointer *operator[](difference_type n) const { return _ptr + n; }
 
-		private:
+		iterator_type base() const { return _ptr; };
+
+		protected:
 			pointer _ptr;
 	};
 

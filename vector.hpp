@@ -12,10 +12,10 @@ namespace ft {
 		typedef typename allocator_type::const_reference const_reference;
 		typedef typename allocator_type::pointer pointer;
 		typedef typename allocator_type::const_pointer const_pointer;
-		typedef ft::random_access_iterator<value_type> iterator;
-		typedef const ft::random_access_iterator<value_type> const_iterator;
+		typedef ft::random_access_iterator<pointer> iterator;
+		typedef ft::random_access_iterator<const_pointer> const_iterator;
 		typedef ft::reverse_iterator<iterator> reverse_iterator;
-		typedef const ft::reverse_iterator<const_iterator> const_reverse_iterator;
+		typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
 		typedef typename std::ptrdiff_t difference_type;
 		typedef std::size_t size_type;
 
@@ -31,29 +31,34 @@ namespace ft {
 		explicit vector(	size_type _count,
 							const T& _value = value_type(),
 							const allocator_type& _alloc = allocator_type()) :
-							_capacity(_count),
-							_size(_count),
+							_capacity(0),
+							_size(0),
 							_allocator(_alloc),
 							_begin(NULL),
 							_end(NULL){
-			_mod_capacity(_size);
+			_mod_capacity(_count);
+			_size = _count;
 
-			for (size_type i = 0; i < _size; i++)
+			//printf("_array = %p\n", _array);
+			//printf("_capacity = %lu\n", _capacity);
+			for (size_type i = 0; i < _size; i++){
 				_array[i] = _value;
+			}
 			_begin = iterator(_array);
 			_end = _begin + _size;
 		}
 
 		template< class InputIt >
 		vector(	InputIt _first, InputIt _last,
-				const allocator_type& _alloc) :
-				_capacity(_last - _first),
-				_size(_capacity),
+				const allocator_type& _alloc = allocator_type()) :
+				_capacity(0),
+				_size(0),
 				_array(NULL),
 				_allocator(_alloc),
 				_begin(NULL),
 				_end(NULL){
-			_mod_capacity(_size);
+			_mod_capacity(_last - _first);
+			_size = _last - _first;
 			for (size_type i = 0; i < _size; i++){
 				_array[i] = _first;
 				_first++;
@@ -109,7 +114,8 @@ namespace ft {
 		}
 
 		template< class InputIt >
-		void assign( InputIt _first, InputIt _last ){
+		void assign(	InputIt _first, InputIt _last, 
+						typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type * = NULL){
 			clear();
 			reserve(_last - _first);
 			for (; _first < _last; _first++){
@@ -128,12 +134,12 @@ namespace ft {
 		const_reference operator[](size_type pos) const {return _array[pos];}
 
 		//FRONT
-		reference front() {_array[0];}
-		const_reference front() const {_array[0];}
+		reference front() {return _array[0];}
+		const_reference front() const {return _array[0];}
 
 		//BACK
-		reference back() {_array[_size - 1];}
-		const_reference back() const {_array[_size - 1];}
+		reference back() {return _array[_size - 1];}
+		const_reference back() const {return _array[_size - 1];}
 
 		//BEGIN
 		iterator begin() {return _begin;}
@@ -367,4 +373,3 @@ namespace ft {
 
 };
 
-//TODO: reimplementar NULL (NULL es de C++11), implementar operador < en iterador
