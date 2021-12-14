@@ -114,7 +114,7 @@ namespace ft {
 		}
 
 		template< class InputIt >
-		void assign(	InputIt _first, InputIt _last, 
+		void assign(	InputIt _first, InputIt _last,
 						typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type * = NULL){
 			clear();
 			reserve(_last - _first);
@@ -176,7 +176,7 @@ namespace ft {
 			if (_new_cap > max_size())
 				throw std::length_error("reserve");
 			try {
-				_mod_capacity(_capacity * 2);
+				_mod_capacity(_new_capacity);
 			} catch (std::bad_alloc &e) {
 				throw e;
 			}
@@ -196,11 +196,12 @@ namespace ft {
 			_size = 0;
 			//_capacity = 0;
 			//_begin = iterator(NULL);
+			_begin = iterator(_array);
 			_end = _begin;
 		}
 
 		//INSERT
-		iterator insert( iterator pos, const T& value ) {
+		iterator insert( iterator pos, const T& value ) { //TOOD: sustiuir contenido por la de abajo simplemente usando "count = 1"
 			size_type s_pos = pos - _begin;
 
 			try {
@@ -214,6 +215,48 @@ namespace ft {
 			for (size_type i = _size; s_pos < i; i--)
 				_array[i] = _array[i - 1];
 			_array[s_pos] = value;
+
+			return iterator(_array + s_pos);
+		}
+
+		void insert( iterator pos, size_type count, const T& value ) {
+			size_type s_pos = pos - _begin;
+
+			try {
+				reserve(_size + count);
+			} catch (std::bad_alloc &e) {
+				std::cerr << e.what() << std::endl;
+				return pos;
+			}
+
+			_size += count;
+			for (size_type i = _size; s_pos < i - count + 1; i--)
+				_array[i] = _array[i - count + 1];
+			for (size_type i = 0; i < count; i++)
+				_array[s_pos + i] = value;
+
+			return iterator(_array + s_pos);
+		}
+
+		template< class InputIt >
+		void insert( iterator pos, InputIt first, InputIt last) {
+			size_type count = last - first;
+			size_type s_pos = pos - _begin;
+
+			try {
+				reserve(_size + count);
+			} catch (std::bad_alloc &e) {
+				std::cerr << e.what() << std::endl;
+				return pos;
+			}
+
+			_size += count;
+			for (size_type i = _size; s_pos < i - count + 1; i--)
+				_array[i] = _array[i - count + 1];
+			for (size_type i = 0; i < count; i++){
+				_array[s_pos + i] = *first;
+				first++;
+			}
 
 			return iterator(_array + s_pos);
 		}
@@ -307,7 +350,7 @@ namespace ft {
 			_other._end = _other._begin + _other._size;
 		}
 
-		private:
+	private:
 		size_type		_capacity;
 		size_type		_size;
 		pointer			_array;
