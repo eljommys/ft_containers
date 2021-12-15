@@ -4,7 +4,7 @@
 
 namespace ft {
 	template < typename T>
-	struct random_access_iterator{
+	struct random_access_iterator {
 
 		typedef T																	iterator_type;
 		typedef typename ft::iterator_traits<iterator_type>::iterator_category		iterator_category;

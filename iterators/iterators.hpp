@@ -8,6 +8,7 @@
 #include <stdexcept>
 #include <cstdlib>
 #include <iostream>
+#include <iterator>
 
 #include <stdio.h>
 

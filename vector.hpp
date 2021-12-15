@@ -57,10 +57,10 @@ namespace ft {
 				_allocator(_alloc),
 				_begin(NULL),
 				_end(NULL){
-			_mod_capacity(_last - _first);
-			_size = _last - _first;
+			_mod_capacity(std::distance(_first, _last));
+			_size = std::distance(_first, _last);
 			for (size_type i = 0; i < _size; i++){
-				_array[i] = _first;
+				_array[i] = *_first;
 				_first++;
 			}
 			_begin = iterator(_array);
@@ -117,9 +117,14 @@ namespace ft {
 		void assign(	InputIt _first, InputIt _last,
 						typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type * = NULL){
 			clear();
-			reserve(_last - _first);
-			for (; _first < _last; _first++){
+
+			size_type new_size = 0;
+			for (InputIt i = _first; i != _last; i++)
+				new_size++;
+			reserve(new_size);
+			for (size_type i = 0; i < new_size; i++){
 				push_back(*_first);
+				_first++;
 			}
 		}
 
@@ -176,7 +181,7 @@ namespace ft {
 			if (_new_cap > max_size())
 				throw std::length_error("reserve");
 			try {
-				_mod_capacity(_new_capacity);
+				_mod_capacity(_new_cap);
 			} catch (std::bad_alloc &e) {
 				throw e;
 			}
@@ -202,7 +207,7 @@ namespace ft {
 
 		//INSERT
 		iterator insert( iterator pos, const T& value ) { //TOOD: sustiuir contenido por la de abajo simplemente usando "count = 1"
-			size_type s_pos = pos - _begin;
+			size_type s_pos = &(*pos) - &(*_begin);
 
 			try {
 				reserve(_size + 1);
@@ -220,13 +225,13 @@ namespace ft {
 		}
 
 		void insert( iterator pos, size_type count, const T& value ) {
-			size_type s_pos = pos - _begin;
+			size_type s_pos = &(*pos) - &(*_begin);
 
 			try {
 				reserve(_size + count);
 			} catch (std::bad_alloc &e) {
 				std::cerr << e.what() << std::endl;
-				return pos;
+				return ;
 			}
 
 			_size += count;
@@ -235,19 +240,19 @@ namespace ft {
 			for (size_type i = 0; i < count; i++)
 				_array[s_pos + i] = value;
 
-			return iterator(_array + s_pos);
+			return ;
 		}
 
 		template< class InputIt >
 		void insert( iterator pos, InputIt first, InputIt last) {
-			size_type count = last - first;
-			size_type s_pos = pos - _begin;
+			size_type count = std::distance(first, last);
+			size_type s_pos = &(*pos) - &(*_begin);
 
 			try {
 				reserve(_size + count);
 			} catch (std::bad_alloc &e) {
 				std::cerr << e.what() << std::endl;
-				return pos;
+				return ;
 			}
 
 			_size += count;
@@ -258,7 +263,7 @@ namespace ft {
 				first++;
 			}
 
-			return iterator(_array + s_pos);
+			return ;
 		}
 
 		//ERASE
@@ -268,7 +273,7 @@ namespace ft {
 				return (iterator(NULL));
 			}
 			_allocator.destroy(&(*pos));
-			for (size_type i = pos - _begin; i < _size; i++)
+			for (size_type i = std::distance(_begin, pos); i < _size; i++)
 				_array[i] = _array[i + 1];
 			_size--;
 			//_mod_capacity(_capacity - 1);
@@ -281,7 +286,7 @@ namespace ft {
 				return (iterator(NULL));
 			}
 			iterator ret(first);
-			size_type diff = last - first;
+			size_type diff = std::distance(first, last);
 
 			for(; first < last; first++){
 				//if (*first)
