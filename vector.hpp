@@ -38,7 +38,6 @@ namespace ft {
 							_end(NULL){
 			_mod_capacity(_count);
 			_size = _count;
-
 			//printf("_array = %p\n", _array);
 			//printf("_capacity = %lu\n", _capacity);
 			for (size_type i = 0; i < _size; i++){
@@ -57,8 +56,9 @@ namespace ft {
 				_allocator(_alloc),
 				_begin(NULL),
 				_end(NULL){
-			_mod_capacity(std::distance(_first, _last));
-			_size = std::distance(_first, _last);
+			size_type new_size = _distance(_first, _last);
+			_mod_capacity(new_size);
+			_size = new_size;
 			for (size_type i = 0; i < _size; i++){
 				_array[i] = *_first;
 				_first++;
@@ -68,21 +68,16 @@ namespace ft {
 		}
 
 		vector(	const vector& _other ) :
-				_capacity(_other.capacity()),
-				_size(_other.size()),
+				_capacity(0),
+				_size(0),
 				_array(NULL),
 				_begin(NULL),
 				_end(NULL){
-			try{
-				_array = _allocator.allocate(_capacity);
-			} catch (std::bad_alloc &e) {
-				_size = 0;
-				_capacity = 0;
-				std::cerr << e.what() << std::endl;
-				return ;
-			}
+			//std::cout << "despues" << std::endl;
+			_mod_capacity(_other.capacity());
 			for (size_type i = 0; i < _other.size(); i++)
 				_array[i] = _other[i];
+			_size = _other.size();
 			_begin = iterator(_array);
 			_end = _begin + _size;
 		}
@@ -118,9 +113,7 @@ namespace ft {
 						typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type * = NULL){
 			clear();
 
-			size_type new_size = 0;
-			for (InputIt i = _first; i != _last; i++)
-				new_size++;
+			size_type new_size = _distance(_first, _last);
 			reserve(new_size);
 			for (size_type i = 0; i < new_size; i++){
 				push_back(*_first);
@@ -207,8 +200,8 @@ namespace ft {
 
 		//INSERT
 		iterator insert( iterator pos, const T& value ) { //TOOD: sustiuir contenido por la de abajo simplemente usando "count = 1"
-			size_type s_pos = &(*pos) - &(*_begin);
 
+			/* size_type s_pos = _distance(_begin, pos);
 			try {
 				reserve(_size + 1);
 			} catch (std::bad_alloc &e) {
@@ -219,14 +212,14 @@ namespace ft {
 			_size++;
 			for (size_type i = _size; s_pos < i; i--)
 				_array[i] = _array[i - 1];
-			_array[s_pos] = value;
+			_array[s_pos] = value; */
 
-			return iterator(_array + s_pos);
+			insert(pos, 1, value);
+
+			return iterator(pos);
 		}
 
 		void insert( iterator pos, size_type count, const T& value ) {
-			size_type s_pos = &(*pos) - &(*_begin);
-
 			try {
 				reserve(_size + count);
 			} catch (std::bad_alloc &e) {
@@ -235,18 +228,23 @@ namespace ft {
 			}
 
 			_size += count;
-			for (size_type i = _size; s_pos < i - count + 1; i--)
-				_array[i] = _array[i - count + 1];
+			_end += count;
+			std::cout << _array << std::endl;
+			size_type s_pos = (_array) ? _distance(_begin, pos) : 0;
+			for (size_type i = _size - 1; s_pos + count - 1 < i; i--)
+				_array[i] = _array[s_pos + count + i];
 			for (size_type i = 0; i < count; i++)
 				_array[s_pos + i] = value;
-
-			return ;
 		}
 
 		template< class InputIt >
-		void insert( iterator pos, InputIt first, InputIt last) {
-			size_type count = std::distance(first, last);
-			size_type s_pos = &(*pos) - &(*_begin);
+		void insert(	iterator pos, InputIt first, InputIt last,
+						typename ft::enable_if
+						<
+							!ft::is_integral<InputIt>::value, InputIt
+						>::type * = NULL) {
+			size_type count = _distance(first, last);
+			size_type s_pos = _distance(_begin, pos);
 
 			try {
 				reserve(_size + count);
@@ -254,8 +252,9 @@ namespace ft {
 				std::cerr << e.what() << std::endl;
 				return ;
 			}
-
 			_size += count;
+			_begin = iterator(_array);
+			_end = _begin + _size;
 			for (size_type i = _size; s_pos < i - count + 1; i--)
 				_array[i] = _array[i - count + 1];
 			for (size_type i = 0; i < count; i++){
@@ -268,15 +267,11 @@ namespace ft {
 
 		//ERASE
 		iterator erase( iterator pos ) {
-			if (pos < begin() || end() <= pos) {
-				throw std::length_error("iterator not in range");
-				return (iterator(NULL));
+			try {
+				pos = erase(pos, pos + 1);
+			} catch (std::length_error &e) {
+				throw e;
 			}
-			_allocator.destroy(&(*pos));
-			for (size_type i = std::distance(_begin, pos); i < _size; i++)
-				_array[i] = _array[i + 1];
-			_size--;
-			//_mod_capacity(_capacity - 1);
 			return pos;
 		}
 
@@ -285,17 +280,17 @@ namespace ft {
 				throw std::length_error("iterator not in range");
 				return (iterator(NULL));
 			}
-			iterator ret(first);
-			size_type diff = std::distance(first, last);
+			size_type diff = _distance(first, last);
+			size_type s_first = _distance(_begin, first);
 
-			for(; first < last; first++){
-				//if (*first)
-					_allocator.destroy(&(*first));
-				*first = *(first + 1);
+			for(size_type i = s_first; i < _size; i++){
+				_allocator.destroy(&_array[i]);
+				_array[i] = _array[i + diff];
+				_allocator.destroy(&_array[i + diff]);
 			}
 			_size -= diff;
-			_mod_capacity(_capacity - diff);
-			return ret;
+			_end -= diff;
+			return first;
 		}
 
 		//PUSH BACK
@@ -368,24 +363,34 @@ namespace ft {
 				return ;
 
 			pointer new_array;
-
+			
 			try {
 				new_array = _allocator.allocate(new_capacity);
 			} catch (std::bad_alloc &e) {
 				throw e;
 				return ;
 			}
-			_size = (new_capacity < _size) ? new_capacity : _size;
-			for (size_type i = 0; i < _size; i++) {
-				new_array[i] = _array[i];
-				_allocator.destroy(&_array[i]);
-			}
-			if (_array)
+			//std::cout << "size = " << _size << std::endl;
+			if (_array){
+				_size = (new_capacity < _size) ? new_capacity : _size;
+				for (size_type i = 0; i < _size; i++) {
+					new_array[i] = _array[i];
+					_allocator.destroy(&_array[i]);
+				}
 				_allocator.deallocate(_array, _capacity);
+			}
 			_array = new_array;
 			_capacity = new_capacity;
 			_begin = iterator(_array);
 			_end = _begin + _size;
+		}
+
+		template<typename InputIt>
+		size_type		_distance(	InputIt _first, InputIt _last){
+			size_type i = 0;
+			for (; _first != _last; _first++)
+				i++;
+			return i;
 		}
 	};
 
