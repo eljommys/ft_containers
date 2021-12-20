@@ -22,7 +22,6 @@ namespace ft {
 		random_access_iterator& operator=(const random_access_iterator<U>& other){_ptr = *other; return *this;}
 		~random_access_iterator() {};
 
-
 		//DEREFERENCE
 		reference operator*() const {return *_ptr;}
 		pointer operator->() const {return _ptr;}
@@ -44,14 +43,41 @@ namespace ft {
 		random_access_iterator& operator-=( difference_type n ) { _ptr -= n; return *this; }
 
 		//OFFSET DEREFERENCE
-		pointer *operator[](difference_type n) const { return _ptr + n; }
+		reference	operator[](difference_type n) const { return _ptr[n]; }
 
 		iterator_type base() const { return _ptr; };
+
+		//EQUIVALENCE COMPARISONS
+		template<class I>
+		bool operator==(const random_access_iterator<I>& _rhs) {
+			return (this->_ptr == _rhs._ptr);
+		}
+		template<class I>
+		bool operator!=(const random_access_iterator<I>& _rhs) {
+			return (this->_ptr != _rhs._ptr);
+		}
+		template<class I>
+		bool operator<(const random_access_iterator<I>& _rhs) {
+			return (this->_ptr < _rhs._ptr);
+		}
+		template<class I>
+		bool operator>(const random_access_iterator<I>& _rhs) {
+			return (this->_ptr > _rhs._ptr);
+		}
+		template<class I>
+		bool operator<=(const random_access_iterator<I>& _rhs) {
+			return (this->_ptr <= _rhs._ptr);
+		}
+		template<class I>
+		bool operator>=(const random_access_iterator<I>& _rhs) {
+			return (this->_ptr >= _rhs._ptr);
+		}
 
 		protected:
 			pointer _ptr;
 	};
 
+/*
 	//EQUIVALENCE COMPARISONS
 	template<class I1, class I2>
 	bool operator==(const random_access_iterator<I1>& _lhs, const random_access_iterator<I2>& _rhs) {
@@ -77,7 +103,7 @@ namespace ft {
 	bool operator>=(const random_access_iterator<I1>& _lhs, const random_access_iterator<I2>& _rhs) {
 		return (&(*_lhs) >= &(*_rhs));
 	}
-
+*/
 	//DIFFERENCE
 	template <class It>
 	int	operator- ( const ft::random_access_iterator<It>& a , const ft::random_access_iterator<It>&b ) {

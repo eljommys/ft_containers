@@ -23,10 +23,10 @@ namespace ft {
 		explicit vector(	const allocator_type& _alloc = allocator_type()) :
 							_capacity(0),
 							_size(0),
-							_array(NULL),
+							_array(0),
 							_allocator(_alloc),
-							_begin(NULL),
-							_end(NULL){}
+							_begin(0),
+							_end(0){}
 
 		explicit vector(	size_type _count,
 							const T& _value = value_type(),
@@ -38,13 +38,10 @@ namespace ft {
 							_end(NULL){
 			_mod_capacity(_count);
 			_size = _count;
-			//printf("_array = %p\n", _array);
-			//printf("_capacity = %lu\n", _capacity);
 			for (size_type i = 0; i < _size; i++){
 				_array[i] = _value;
 			}
-			_begin = iterator(_array);
-			_end = _begin + _size;
+			_end += _size;
 		}
 
 		template< class InputIt >
@@ -63,8 +60,7 @@ namespace ft {
 				_array[i] = *_first;
 				_first++;
 			}
-			_begin = iterator(_array);
-			_end = _begin + _size;
+			_end += _size;
 		}
 
 		vector(	const vector& _other ) :
@@ -78,8 +74,7 @@ namespace ft {
 			for (size_type i = 0; i < _other.size(); i++)
 				_array[i] = _other[i];
 			_size = _other.size();
-			_begin = iterator(_array);
-			_end = _begin + _size;
+			_end +=_size;
 		}
 
 		//DESTRUCTOR
@@ -229,7 +224,6 @@ namespace ft {
 
 			_size += count;
 			_end += count;
-			std::cout << _array << std::endl;
 			size_type s_pos = (_array) ? _distance(_begin, pos) : 0;
 			for (size_type i = _size - 1; s_pos + count - 1 < i; i--)
 				_array[i] = _array[s_pos + count + i];
