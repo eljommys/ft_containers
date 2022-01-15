@@ -14,6 +14,9 @@
 
 #include "iterator_traits.hpp"
 #include "reverse_iterator.hpp"
+#include "conditional.hpp"
+#include "lexicographical_compare.hpp"
+#include "equal.hpp"
 #include "random_access_iterator.hpp"
 
 namespace ft {
