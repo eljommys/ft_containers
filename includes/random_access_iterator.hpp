@@ -1,6 +1,6 @@
 #pragma once
 
-#include "iterators.hpp"
+#include "ft.hpp"
 
 namespace ft
 {
@@ -14,7 +14,7 @@ namespace ft
 		typedef typename ft::iterator_traits<iterator_type>::pointer				pointer;
 		typedef typename ft::iterator_traits<iterator_type>::reference				reference;
 
-		random_access_iterator() : it( NULL){}
+		random_access_iterator() : it(NULL){}
 
 		template <class S>
 		random_access_iterator( const random_access_iterator<S>& other) : it( other.base()) {}

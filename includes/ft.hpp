@@ -18,6 +18,9 @@
 #include "lexicographical_compare.hpp"
 #include "equal.hpp"
 #include "random_access_iterator.hpp"
+#include "pair.hpp"
+#include "bidirectional_iterator_traits.hpp"
+#include "bidirectional_iterator.hpp"
 
 namespace ft {
 	struct input_iterator_tag { };
