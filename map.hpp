@@ -43,23 +43,38 @@ namespace ft {
 			protected:
 			Compare _comp;
 			value_compare(Compare c) : _comp(c) {}
-		}
+		};
 
 		//CONSTRUCTORS
-		//map() {}
+		map() :
+				_allocator(Allocator()),
+				_comp(Compare()),
+				_tree(NULL),
+				_it(NULL) {}
+
 		explicit map(	const Compare& comp,
-						const Allocator& alloc = Allocator() ) : _comp(comp), _allocator(alloc) {}
+						const Allocator& alloc = Allocator() ) :
+				_allocator(alloc),
+				_comp(comp),
+				_tree(NULL),
+				_it(NULL) {}
 
 		template< class InputIt >
 		map(InputIt first, InputIt last,
 			const Compare& comp = Compare(),
-			const Allocator& alloc = Allocator() ) : _comp(comp), _allocator(alloc){}
+			const Allocator& alloc = Allocator() ) :
+				_comp(comp),
+				_allocator(alloc){
+			size_type dist = std::distance(first, last);
+			for (; first != last; first++)
+				insert(*first);
+		}
 
 		map( const map& other ) : _comp(other._comp), _allocator(other._allocator){}
 
 		~map() {}
 
-		map& operator=( const map& other ) {}
+		/*map& operator=( const map& other ) {}
 
 		//GET_ALLOCATOR
 		allocator_type get_allocator() const {}
@@ -93,11 +108,50 @@ namespace ft {
 		size_type max_size() const {}
 
 		//CLEAR
-		void clear() {}
+		void clear() {}*/
 
 		//INSERT
-		ft::pair<iterator,bool> insert( const value_type& value ) {}
-		iterator insert( iterator hint, const value_type& value ) {}
+		ft::pair<iterator,bool> insert( const value_type& value ) {
+			if (!_tree) {
+				_tree = new ft::Tree<pointer>;
+				_tree->prev = NULL;
+				_tree->val = value;
+				_tree->right = NULL;
+				_tree->left = NULL;
+			}
+
+			ft::Tree<pointer>	*node = _tree;
+			while (true) {
+				if (_comp(value.first, node->val.first)) {
+					if (!node->left) {
+						node->left = new ft::Tree<pointer>;
+						node->left->prev = node;
+						node->left->val = _allocator.allocate(1);
+						*(node->left->val) = value;
+						node->left->left = NULL;
+						node->left->right = NULL;
+						return make_pair<iterator, bool>(iterator(node->left, true));
+					}
+					else
+						node = node->left;
+				} else if (_comp(node->val.first, value.first)) {
+					if (!node->right) {
+						node->right = new ft::Tree<pointer>;
+						node->right->prev = node;
+						node->right->val = _allocator.allocate(1);
+						*(node->right->val) = value;
+						node->right->left = NULL;
+						node->right->right = NULL;
+						return make_pair<iterator, bool>(iterator(node->right, true));
+					}
+					else
+						node = node->left;
+				} else
+					return make_pair<iterator, bool>(iterator(node), false);
+			}
+		}
+
+		/*iterator insert( iterator hint, const value_type& value ) {}
 		template< class InputIt >
 		void insert( InputIt first, InputIt last );
 
@@ -130,11 +184,12 @@ namespace ft {
 
 		//KEY_COMP
 		key_compare key_comp() const {}
-		ft::map::value_compare value_comp() const {}
+		ft::map::value_compare value_comp() const {}*/
 
 		private:
-		allocator_type	_allocator;
-		key_compare		_comp;
-		iterator		_it;
+		allocator_type		_allocator;
+		key_compare			_comp;
+		ft::Tree<pointer>	*_tree;
+		iterator			_it;
 	};
-}
+};

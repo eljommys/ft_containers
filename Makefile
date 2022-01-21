@@ -1,17 +1,19 @@
 MSG=Default commit message
 
-all:
+init:
 	chmod 777 init.sh
 	./init.sh
 
-vector: all
+all: vector stack map
+
+vector: init
 	cd containers_test ; ./do.sh vector
-	
-stack:
+
+stack: init
 	cd containers_test ; ./do.sh stack
 
-map:
-	cd containers_test ; ./do.sh vector
+map: init
+	cd containers_test ; ./do.sh map
 
 clean:
 	@rm -rf containers_test
