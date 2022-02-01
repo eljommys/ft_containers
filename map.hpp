@@ -115,7 +115,8 @@ namespace ft {
 			if (!_tree) {
 				_tree = new ft::Tree<pointer>;
 				_tree->prev = NULL;
-				_tree->val = value;
+				_tree->val = new value_type;
+				*(_tree->val) = value;
 				_tree->right = NULL;
 				_tree->left = NULL;
 			}
