@@ -76,7 +76,7 @@ namespace ft {
 			_origin->parent = _none;
 		}
 
-		pointer _predecesor (pointer _ptr) {
+		pointer _previous (pointer _ptr) {
 			if (_ptr->left != _none) {
 				_ptr = _ptr->left;
 				while (_ptr->right != _none)
@@ -241,12 +241,13 @@ namespace ft {
 			}
 		}
 
+		//REMOVE
 		void remove (const value_type & _v) {
+			pointer uncle = _none;
 			pointer ptr = _find(_v);
 			pointer father = (ptr->left == _none || ptr->right == _none) ?
-								ptr : _predecesor (ptr);
+								ptr : _previous(ptr);
 			pointer child  = father->left != _none ? father->left : father->right;
-			pointer uncle = _none;
 
 			if (child != _none)
 				child->parent = father->parent;
@@ -281,20 +282,24 @@ namespace ft {
 			__size()--;
 		}
 
+		//SIZE
 		size_type size() const { return _size ; }
 
+		//FIND
 		iterator find (value_type const & _v) { return iterator (_find(_v), _none); }
 
 		const_iterator find (value_type const & _v) const { return const_iterator (_find(_v), _none); }
 
+		//VALUE_COMP
 		value_compare value_comp() const  { return _comp; }
 
-		size_type max_size() const {
-			return node_allocator().max_size();
-		}
+		//MAX_SIZE
+		size_type max_size() const { return node_allocator().max_size(); }
 
+		//EMPTY
 		bool empty() const { return (__size()) ? false : true; }
 
+		//GET_ALLOCATOR
 		allocator_type get_allocator() const { return node_allocator(); }
 
 		void clear() {

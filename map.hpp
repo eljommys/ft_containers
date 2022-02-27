@@ -55,9 +55,9 @@ namespace ft {
 
 		//CONSTRUCTORS
 		explicit map(const key_compare & comp = key_compare(),
-					const allocator_type & alloc = allocator_type())
-			: tree(),
-			comp_allocator(ft::make_pair(comp, alloc)) {}
+					const allocator_type & alloc = allocator_type()) :
+				tree(),
+				comp_allocator(ft::make_pair(comp, alloc)) {}
 
 		template <typename InputIt>
 		map (InputIt  first, InputIt  last,
@@ -73,6 +73,10 @@ namespace ft {
 
 		map(const map& other) { *this = other; }
 
+		//DESTRUCTOR
+		~map() {}
+
+		//OVERLOAD OPERATOR
 		map& operator=(const map& other) {
 			if (this != &other) {
 				comp_allocator = other.comp_allocator;
@@ -82,26 +86,32 @@ namespace ft {
 			return *this;
 		}
 
-		~map() {}
+		//GET ALLOCATOR
+		allocator_type get_allocator() const { return tree.get_allocator(); }
 
-		iterator		begin() { return tree.begin(); }
-		iterator		end() { return tree.end(); }
-		const_iterator	begin() const { return tree.begin(); }
-		const_iterator	end() const { return tree.end(); }
-
+		//BEGIN
+		iterator				begin() { return tree.begin(); }
+		const_iterator			begin() const { return tree.begin(); }
 		reverse_iterator		rbegin() { return  tree.rbegin(); }
-		reverse_iterator		rend() { return  tree.rend(); }
 		const_reverse_iterator	rbegin() const { return tree.rbegin(); }
+
+		//END
+		iterator				end() { return tree.end(); }
+		const_iterator			end() const { return tree.end(); }
+		reverse_iterator		rend() { return  tree.rend(); }
 		const_reverse_iterator	rend() const { return tree.end(); }
 
+		//EMPTY
 		bool empty() const { return tree.empty(); };
 
+		//MAX_SIZE
 		size_type max_size() const { return tree.max_size(); };
 
+		//SIZE
 		size_type size() const { return tree.size(); };
 
-		mapped_type& operator[](const key_type& k)
-		{
+		//OPERATOR[] OVERLOAD
+		mapped_type& operator[](const key_type& k) {
 			iterator	hunt = find(k);
 
 			if (hunt != end())
@@ -109,10 +119,8 @@ namespace ft {
 			return (*insert(ft::make_pair(k, mapped_type())).first).second;
 		}
 
-		ft::pair<iterator, bool> insert(const value_type& val) {
-			return tree.insert(val);
-		}
-
+		//INSERT
+		ft::pair<iterator, bool> insert(const value_type& val) { return tree.insert(val); }
 		iterator insert(iterator pos, const value_type& val) {
 			static_cast< void >(pos);
 			return tree.insert(val).first;
@@ -127,16 +135,12 @@ namespace ft {
 				tree.insert(*first);
 		}
 
-		iterator find(const key_type & key) {
-			return tree.find(ft::make_pair(key, mapped_type()));
-		}
+		//FIND
+		iterator		find(const key_type & key) { return tree.find(ft::make_pair(key, mapped_type())); }
+		const_iterator	find(const key_type& key) const { return tree.find(ft::make_pair(key, mapped_type())); }
 
-		const_iterator find(const key_type& key) const {
-			return tree.find(ft::make_pair(key, mapped_type()));
-		}
-
+		//ERASE
 		void erase (iterator pos) { tree.remove(*pos); }
-
 		void erase(iterator first, iterator last) {
 			for (; first != last;)
 				tree.remove(*(first++));
@@ -152,19 +156,25 @@ namespace ft {
 			return 0;
 		}
 
+		//CLEAR
 		void clear() { erase(begin(), end()); }
 
+		//COUNT
 		size_type count(const key_type & k) const { return (find(k) != end()) ? 1 : 0; }
 
+		//KEY_COMPARE
 		key_compare key_comp() const { return comp_allocator.first; };
 
+		//VALUE_COMPARE
 		value_compare value_comp() const { return tree.value_comp(); }
 
+		//SWAP
 		void swap(map& other) {
 			swap(comp_allocator, other.comp_allocator);
 			tree.swap(other.tree);
 		}
 
+		//LOWER_BOUND
 		iterator lower_bound(const Key& k) {
 			iterator first = begin();
 			iterator last = end();
@@ -185,7 +195,7 @@ namespace ft {
 			return const_iterator(first);
 		}
 
-
+		//UPPER BOUND
 		iterator upper_bound(const Key& k) {
 			iterator first = begin();
 			iterator last = end();
@@ -206,15 +216,11 @@ namespace ft {
 			return const_iterator(first);
 		}
 
-		ft::pair<iterator, iterator> equal_range(const Key& k) {
-			return ft::make_pair(lower_bound(k), upper_bound(k));
-		}
-
-		ft::pair<const_iterator, const_iterator> equal_range(const Key& k) const {
-			return ft::make_pair(lower_bound(k), upper_bound(k));
-		}
-
+		//EQUAL_RANGE
+		ft::pair<iterator, iterator> equal_range(const Key& k) { return ft::make_pair(lower_bound(k), upper_bound(k)); }
+		ft::pair<const_iterator, const_iterator> equal_range(const Key& k) const { return ft::make_pair(lower_bound(k), upper_bound(k)); }
 	};
+
 
 	template< typename Key, typename T, typename Compare, typename Alloc >
 	bool operator==(const ft::map<Key, T, Compare, Alloc > &x, const ft::map<Key, T, Compare, Alloc > &y) {
@@ -247,6 +253,4 @@ namespace ft {
 	void swap(const ft::map<Key, T, Compare, Alloc > &x, const ft::map<Key, T, Compare, Alloc > &y) {
 		return x.swap(y);
 	}
-
-
 }
