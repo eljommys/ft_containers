@@ -12,6 +12,7 @@
 
 #include <stdio.h>
 
+#include "nullptr.hpp"
 #include "iterator_traits.hpp"
 #include "reverse_iterator.hpp"
 #include "conditional.hpp"
@@ -21,6 +22,9 @@
 #include "pair.hpp"
 #include "bidirectional_iterator_traits.hpp"
 #include "bidirectional_iterator.hpp"
+#include "less_more.hpp"
+#include "tree_iterator.hpp"
+#include "tree.hpp"
 
 namespace ft {
 	struct input_iterator_tag { };

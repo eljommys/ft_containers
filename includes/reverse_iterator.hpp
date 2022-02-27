@@ -14,8 +14,8 @@ namespace ft {
 		typedef typename ft::iterator_traits<iterator_type>::pointer				pointer;
 		typedef typename ft::iterator_traits<iterator_type>::reference				reference;
 
-		reverse_iterator() : it(NULL) {}
-		explicit reverse_iterator(iterator_type _it) : it(_it) {}
+		reverse_iterator() : it() {}
+		explicit reverse_iterator(iterator_type it) : it(it) {}
 
 		template <typename S>
 		reverse_iterator(const reverse_iterator<S>& other) : it(other.base()) {}
@@ -43,7 +43,7 @@ namespace ft {
 		iterator_type	it;
 	};
 
-	//EQUIVALENCE COMPARISONS
+	//EQUIVALENCE COMPARATORS
 	template< class _Iter1>
 	bool operator== (const ft::reverse_iterator<_Iter1>& lhs, const ft::reverse_iterator<_Iter1>& rhs) {
 		return lhs.base() == rhs.base();
