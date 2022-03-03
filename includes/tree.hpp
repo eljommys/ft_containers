@@ -66,9 +66,6 @@ namespace ft {
 
 		tree& operator= (const tree& other);
 
-		size_type& __size() { return _size; }
-		const size_type& __size() const { return _size; }
-
 		void _none_reset() const {
 			_none->parent = _none;
 			_none->right = _origin;
@@ -125,7 +122,7 @@ namespace ft {
 			b = c;
 		}
 
-		ft::pair<pointer, bool>	__treeLeaf (value_type const & _v, pointer _ptr) {
+		ft::pair<pointer, bool>	_treeLeaf (value_type const & _v, pointer _ptr) {
 			while (true) {
 				if (_comp(_ptr->content, _v)) {
 					if (_ptr->right == _none)
@@ -145,7 +142,7 @@ namespace ft {
 			pointer tmpNode = node_allocator().allocate(1);
 
 			node_allocator().construct(tmpNode, node_type(_v , _none));
-			__size()++;
+			_size++;
 			return tmpNode;
 		}
 
@@ -154,7 +151,7 @@ namespace ft {
 
 			node_allocator().construct(tmpNode, node_type(_v , _none));
 			tmpNode->parent = _ptr;
-			__size()++;
+			_size++;
 			return tmpNode;
 		}
 
@@ -217,27 +214,28 @@ namespace ft {
 		const_reverse_iterator	rbegin() const { return const_reverse_iterator(end()); }
 		const_reverse_iterator	rend() const { return const_reverse_iterator(begin()); }
 
+		//INSERT
 		ft::pair<iterator, bool> insert (value_type const & _v) {
 			if (_origin == _none) {
 				_origin = _create_node(_v);
 				_none_reset();
 				return ft::make_pair(iterator(_origin, _none), true);
 			} else {
-				ft::pair<pointer, bool> __checkLeaf = __treeLeaf(_v, _origin);
+				ft::pair<pointer, bool> _checkLeaf = _treeLeaf(_v, _origin);
 
-				if (__checkLeaf.second) {
-					if (_comp(__checkLeaf.first->content, _v)) {
-						__checkLeaf.first->right = _create_node(_v, __checkLeaf.first);
-						__checkLeaf.first = __checkLeaf.first->right;
-					} else if (_comp(_v,__checkLeaf.first->content)) {
-						__checkLeaf.first->left= _create_node(_v, __checkLeaf.first);
-						__checkLeaf.first = __checkLeaf.first->left;
+				if (_checkLeaf.second) {
+					if (_comp(_checkLeaf.first->content, _v)) {
+						_checkLeaf.first->right = _create_node(_v, _checkLeaf.first);
+						_checkLeaf.first = _checkLeaf.first->right;
+					} else if (_comp(_v,_checkLeaf.first->content)) {
+						_checkLeaf.first->left= _create_node(_v, _checkLeaf.first);
+						_checkLeaf.first = _checkLeaf.first->left;
 					}
 					_none_reset();
-					return ft::make_pair(iterator(__checkLeaf.first, _none), true);
+					return ft::make_pair(iterator(_checkLeaf.first, _none), true);
 				}
 				_none_reset();
-				return ft::make_pair(iterator(__checkLeaf.first, _none), false);
+				return ft::make_pair(iterator(_checkLeaf.first, _none), false);
 			}
 		}
 
@@ -252,15 +250,15 @@ namespace ft {
 			if (child != _none)
 				child->parent = father->parent;
 
-			if (father == father->parent->left) {
-				father->parent->left = child;
-				if (father != _origin)
-					uncle = father->parent->right;
-				else
+			if (father == father->parent->left) { //is a left node
+				if (father == _origin)
 					_origin = child;
-			} else {
-				father->parent->right = child;
+				else
+					uncle = father->parent->right;
+				father->parent->left = child;
+			} else { //is a right node
 				uncle = father->parent->left;
+				father->parent->right = child;
 			}
 
 			if (father != ptr) {
@@ -277,9 +275,10 @@ namespace ft {
 				if (_origin == ptr)
 					_origin = father;
 			}
+
 			_destroy_node(ptr);
 			_none_reset();
-			__size()--;
+			_size--;
 		}
 
 		//SIZE
@@ -297,17 +296,18 @@ namespace ft {
 		size_type max_size() const { return node_allocator().max_size(); }
 
 		//EMPTY
-		bool empty() const { return (__size()) ? false : true; }
+		bool empty() const { return (_size) ? false : true; }
 
 		//GET_ALLOCATOR
 		allocator_type get_allocator() const { return node_allocator(); }
 
 		void clear() {
 			_destroy_tree(_origin);
-			__size() = 0;
+			_size = 0;
 			_origin = _none;
 		}
 
+		//SWAP
 		void	swap(tree& _other) {
 			_swap(_origin, _other._origin);
 			_swap(_size, _other._size);
