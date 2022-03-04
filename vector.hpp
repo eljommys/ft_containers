@@ -2,6 +2,8 @@
 
 #include "includes/ft.hpp"
 
+//TODO: reimplementar insert, cambiar todos los iteradores por punteros. No usar iteradores siempre que se pueda
+
 namespace ft {
 	template < class T, class Alloc = std::allocator<T> >
 	class vector{
@@ -83,8 +85,8 @@ namespace ft {
 		//DESTRUCTOR
 		~vector() {
 			if (_array) {
-				//for (size_type i = 0; i < _size; i++)
-					//_allocator.destroy(&_array[i]);
+				for (size_type i = 0; i < _size; i++)
+					_allocator.destroy(&_array[i]);
 				_allocator.deallocate(_array, _capacity);
 			}
 			//std::cout << "~vector" << std::endl;
@@ -216,14 +218,22 @@ namespace ft {
 			return _begin + s_pos;
 		}
 
+		pointer __move( pointer __first, pointer __last, pointer __result )
+		{
+			const size_t __n = std::distance (__first , __last);
+			if ( __n > 0 )
+				std::memmove(__result, __first, __n * sizeof( __result ) );
+			return __result + __n;
+		}
+
 		template< class InputIt >
 		iterator insert(	iterator pos, InputIt first, InputIt last,
 						typename ft::enable_if
 						<
 							!ft::is_integral<InputIt>::value, InputIt
 						>::type * = ft::nullptr_t) {
-			size_type count = _distance(first, last);
-			size_type s_pos = _distance(_begin, pos);
+			/* size_type count = _distance(first, last);
+			size_type s_pos = (_size) ? _distance(_begin, pos) : 0;
 
 			try {
 				reserve(_size + count);
@@ -236,12 +246,40 @@ namespace ft {
 			_end = _begin + _size;
 			for (size_type i = _size; s_pos + count - 1 < i; i--)
 				_array[i] = _array[i - count];
-			for (size_type i = 0; i < count; i++){
+			for (size_type i = 0; i < count; i++) {
 				_array[s_pos + i] = *first;
 				first++;
 			}
-
-			return _begin + s_pos;
+			return _begin + s_pos; */
+			pointer p = this->_begin + ( pos - begin() );
+			difference_type _n = std::distance( first , last );
+			iterator _end_cap = _begin + _capacity;
+			if ( _n > 0 )
+			{
+				if ( _n <= _end_cap - this->_end )
+				{
+					if ( p == this->_end )
+						_construct_at_end( _first, _last );
+					else
+					{
+						_end++;
+						__move( p, _array + _size - 1 ,p + _n );
+						for (; first != last ; ++p, ++first )
+							*p = *first;
+						this->_size += _n;
+					}
+				}
+				else
+				{
+					vector __v( this->__alloc() );
+					__v.reserve(_size + p) );	
+					__v.__construct_at_end( this->__begin_, __p );
+					__v.__construct_at_end( __first, __last );
+					__v.__construct_at_end( __p , this->__end_);
+					swap( __v );
+				}
+			}
+			return __positions;
 		}
 
 		//ERASE
