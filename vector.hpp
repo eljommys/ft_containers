@@ -33,10 +33,10 @@ namespace ft {
 							const allocator_type& _alloc = allocator_type()) :
 							_capacity(0),
 							_size(0),
-							_array(NULL),
+							_array(ft::nullptr_t),
 							_allocator(_alloc),
-							_begin(NULL),
-							_end(NULL){
+							_begin(ft::nullptr_t),
+							_end(ft::nullptr_t){
 			_mod_capacity(_count);
 			_size = _count;
 			for (size_type i = 0; i < _size; i++){
@@ -50,13 +50,13 @@ namespace ft {
 				const allocator_type& _alloc = allocator_type(),
 				typename ft::enable_if<
 					!ft::is_integral<InputIt>::value, InputIt
-				>::type * = NULL) :
+				>::type * = ft::nullptr_t) :
 				_capacity(0),
 				_size(0),
-				_array(NULL),
+				_array(ft::nullptr_t),
 				_allocator(_alloc),
-				_begin(NULL),
-				_end(NULL){
+				_begin(ft::nullptr_t),
+				_end(ft::nullptr_t){
 			size_type new_size = _distance(_first, _last);
 			_mod_capacity(new_size);
 			_size = new_size;
@@ -70,9 +70,9 @@ namespace ft {
 		vector(	const vector& _other ) :
 				_capacity(0),
 				_size(0),
-				_array(NULL),
-				_begin(NULL),
-				_end(NULL){
+				_array(ft::nullptr_t),
+				_begin(ft::nullptr_t),
+				_end(ft::nullptr_t){
 			_mod_capacity(_other.capacity());
 			for (size_type i = 0; i < _other.size(); i++)
 				_array[i] = _other[i];
@@ -83,10 +83,11 @@ namespace ft {
 		//DESTRUCTOR
 		~vector() {
 			if (_array) {
-				for (size_type i = 0; i < _size; i++)
-					_allocator.destroy(&_array[i]);
+				//for (size_type i = 0; i < _size; i++)
+					//_allocator.destroy(&_array[i]);
 				_allocator.deallocate(_array, _capacity);
 			}
+			//std::cout << "~vector" << std::endl;
 		}
 
 		//OPERATOR OVERLOADS
@@ -108,7 +109,7 @@ namespace ft {
 
 		template< class InputIt >
 		void assign(	InputIt _first, InputIt _last,
-						typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type * = NULL){
+						typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type * = ft::nullptr_t){
 			clear();
 
 			size_type new_size = _distance(_first, _last);
@@ -203,7 +204,7 @@ namespace ft {
 				reserve(_size + count);
 			} catch (std::bad_alloc &e) {
 				std::cerr << e.what() << std::endl;
-				return iterator(NULL);
+				return iterator(ft::nullptr_t);
 			}
 
 			_size += count;
@@ -220,7 +221,7 @@ namespace ft {
 						typename ft::enable_if
 						<
 							!ft::is_integral<InputIt>::value, InputIt
-						>::type * = NULL) {
+						>::type * = ft::nullptr_t) {
 			size_type count = _distance(first, last);
 			size_type s_pos = _distance(_begin, pos);
 
@@ -228,7 +229,7 @@ namespace ft {
 				reserve(_size + count);
 			} catch (std::bad_alloc &e) {
 				std::cerr << e.what() << std::endl;
-				return iterator(NULL);
+				return iterator(ft::nullptr_t);
 			}
 			_size += count;
 			_begin = iterator(_array);
@@ -256,7 +257,7 @@ namespace ft {
 		iterator erase( iterator first, iterator last ) {
 			if (first > last || first < begin() || end() < last) {
 				throw std::length_error("iterator not in range");
-				return (iterator(NULL));
+				return (iterator(ft::nullptr_t));
 			}
 			size_type diff = _distance(first, last);
 			size_type s_first = _distance(_begin, first);

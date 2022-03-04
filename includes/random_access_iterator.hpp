@@ -14,14 +14,14 @@ namespace ft
 		typedef typename ft::iterator_traits<iterator_type>::pointer				pointer;
 		typedef typename ft::iterator_traits<iterator_type>::reference				reference;
 
-		random_access_iterator() : it(NULL){}
+		random_access_iterator() : it(ft::nullptr_t){}
 
 		template <class S>
 		random_access_iterator( const random_access_iterator<S>& other) : it( other.base()) {}
 
 		random_access_iterator( const iterator_type & other) : it( other) {}
 
-		virtual ~random_access_iterator(){}
+		virtual ~random_access_iterator(){/* std::cout << "~random access iterator" << std::endl; */}
 
 		random_access_iterator & operator=( const random_access_iterator& other) {
 			if (this == &other)

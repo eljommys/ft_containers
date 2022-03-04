@@ -109,38 +109,38 @@ class tree_iterator {
 	}
 };
 
-	template <typename N1, typename T1, typename N2, typename V2>
-	bool operator== (const ft::tree_iterator<N1, T1> lhs, const ft::tree_iterator<N2, V2> rhs) {
+	template <typename N1, typename T1, typename N2, typename T2>
+	bool operator== (const ft::tree_iterator<N1, T1> lhs, const ft::tree_iterator<N2, T2> rhs) {
 		return lhs.getNode() == rhs.getNode();
 	}
 
-	template <typename N1, typename T1, typename N2, typename V2>
-	bool operator!= (const ft::tree_iterator<N1, T1> lhs, const ft::tree_iterator<N2, V2> rhs) {
+	template <typename N1, typename T1, typename N2, typename T2>
+	bool operator!= (const ft::tree_iterator<N1, T1> lhs, const ft::tree_iterator<N2, T2> rhs) {
 		return !(lhs == rhs);
 	}
 
-	template <typename N1, typename T1,  typename N2, typename V2>
-	bool operator<(const ft::tree_iterator<N1, T1> lhs, const ft::tree_iterator<N2, V2> rhs) {
+	template <typename N1, typename T1,  typename N2, typename T2>
+	bool operator<(const ft::tree_iterator<N1, T1> lhs, const ft::tree_iterator<N2, T2> rhs) {
 		return lhs.getNode() <rhs.getNode();
 	}
 
-	template <typename N1, typename T1,  typename N2, typename V2>
-	bool operator>= (const ft::tree_iterator<N1, T1> lhs, const ft::tree_iterator<N2, V2> rhs) {
+	template <typename N1, typename T1,  typename N2, typename T2>
+	bool operator>= (const ft::tree_iterator<N1, T1> lhs, const ft::tree_iterator<N2, T2> rhs) {
 		return !(lhs <rhs);
 	}
 
-	template <typename N1, typename T1,  typename N2, typename V2>
-	bool operator> (const ft::tree_iterator<N1, T1> lhs, const ft::tree_iterator<N2, V2> rhs) {
+	template <typename N1, typename T1,  typename N2, typename T2>
+	bool operator> (const ft::tree_iterator<N1, T1> lhs, const ft::tree_iterator<N2, T2> rhs) {
 		return rhs <lhs;
 	}
 
-	template <typename N1, typename T1,  typename N2, typename V2>
-	bool operator<= (const ft::tree_iterator<N1, T1> lhs, const ft::tree_iterator<N2, V2> rhs) {
+	template <typename N1, typename T1,  typename N2, typename T2>
+	bool operator<= (const ft::tree_iterator<N1, T1> lhs, const ft::tree_iterator<N2, T2> rhs) {
 		return !(rhs <lhs);
 	}
 
-	template <typename N1, typename T1,  typename N2, typename V2>
-	ptrdiff_t operator- (const ft::tree_iterator<N1, T1> lhs, const ft::tree_iterator<N2, V2> rhs) {
+	template <typename N1, typename T1,  typename N2, typename T2>
+	ptrdiff_t operator- (const ft::tree_iterator<N1, T1> lhs, const ft::tree_iterator<N2, T2> rhs) {
 		return lhs.getNode() - rhs.getNode();
 	}
 

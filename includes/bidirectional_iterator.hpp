@@ -22,7 +22,7 @@ namespace ft {
 		typedef typename ft::bidirectional_iterator_traits<iterator_type>::pointer				pointer;
 		typedef typename ft::bidirectional_iterator_traits<iterator_type>::reference			reference;
 
-		bidirectional_iterator() : it(NULL) {};
+		bidirectional_iterator() : it(ft::nullptr_t) {};
 		bidirectional_iterator(const bidirectional_iterator &other) : //
 			it(other.it) {}
 
