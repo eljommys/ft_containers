@@ -26,9 +26,10 @@ namespace ft {
 							_capacity(0),
 							_size(0),
 							_array(0),
-							_allocator(_alloc),
-							_begin(0),
-							_end(0){}
+							_allocator(_alloc)
+							//_begin(0),
+							//_end(0)
+							{}
 
 		explicit vector(	size_type _count,
 							const T& _value = value_type(),
@@ -36,15 +37,16 @@ namespace ft {
 							_capacity(0),
 							_size(0),
 							_array(ft::nullptr_t),
-							_allocator(_alloc),
-							_begin(ft::nullptr_t),
-							_end(ft::nullptr_t){
+							_allocator(_alloc)
+							//_begin(ft::nullptr_t),
+							//_end(ft::nullptr_t)
+							{
 			_mod_capacity(_count);
 			_size = _count;
 			for (size_type i = 0; i < _size; i++){
 				_array[i] = _value;
 			}
-			_end += _size;
+			//_end += _size;
 		}
 
 		template< class InputIt >
@@ -56,9 +58,10 @@ namespace ft {
 				_capacity(0),
 				_size(0),
 				_array(ft::nullptr_t),
-				_allocator(_alloc),
-				_begin(ft::nullptr_t),
-				_end(ft::nullptr_t){
+				_allocator(_alloc)
+				//_begin(ft::nullptr_t),
+				//_end(ft::nullptr_t)
+				{
 			size_type new_size = _distance(_first, _last);
 			_mod_capacity(new_size);
 			_size = new_size;
@@ -66,20 +69,21 @@ namespace ft {
 				_array[i] = *_first;
 				_first++;
 			}
-			_end += _size;
+			//_end += _size;
 		}
 
 		vector(	const vector& _other ) :
 				_capacity(0),
 				_size(0),
-				_array(ft::nullptr_t),
-				_begin(ft::nullptr_t),
-				_end(ft::nullptr_t){
+				_array(ft::nullptr_t)
+				//_begin(ft::nullptr_t),
+				//_end(ft::nullptr_t)
+				{
 			_mod_capacity(_other.capacity());
 			for (size_type i = 0; i < _other.size(); i++)
 				_array[i] = _other[i];
 			_size = _other.size();
-			_end +=_size;
+			//_end +=_size;
 		}
 
 		//DESTRUCTOR
@@ -101,7 +105,7 @@ namespace ft {
 		//ASSIGN
 		void assign( size_type _count, const T& _value ){
 			clear();
-			_end = _begin;
+			//_end = _begin;
 			if (_count <= 0)
 				return ;
 			reserve(_count);
@@ -149,12 +153,12 @@ namespace ft {
 		const_reference back() const {return _array[_size - 1];}
 
 		//BEGIN
-		iterator begin() {return _begin;}
-		const_iterator begin() const {return _begin;}
+		iterator begin() {/* return _begin; */ return iterator(_array);}
+		const_iterator begin() const {/* return _begin; */ return iterator(_array);}
 
 		//END
-		iterator end() {return _end;}
-		const_iterator end() const {return _end;}
+		iterator end() {/* return _end; */ return iterator(_array + _size);}
+		const_iterator end() const {/* return _end; */ return iterator(_array + _size);}
 
 		//RBEGIN
 		reverse_iterator rbegin() {return reverse_iterator(end());}
@@ -190,8 +194,8 @@ namespace ft {
 			for (size_type i = 0; i < _size; i++)
 				_allocator.destroy(&(_array[i]));
 			_size = 0;
-			_begin = iterator(_array);
-			_end = _begin;
+			//_begin = iterator(_array);
+			//_end = _begin;
 		}
 
 		//INSERT
@@ -200,7 +204,8 @@ namespace ft {
 		}
 
 		iterator insert( iterator pos, size_type count, const T& value ) {
-			size_type s_pos = (_size) ? _distance(_begin, pos) : 0;
+			//size_type s_pos = (_size) ? _distance(_begin, pos) : 0;
+			size_type s_pos = (_size) ? _distance(iterator(_array), pos) : 0;
 
 			try {
 				reserve(_size + count);
@@ -209,13 +214,14 @@ namespace ft {
 				return iterator(ft::nullptr_t);
 			}
 
-			_size += count;
-			_end += count;
+			//_size += count;
+			//_end += count;
 			for (size_type i = _size; s_pos + count - 1 < i; i--)
 				_array[i] = _array[i - count];
 			for (size_type i = 0; i < count; i++)
 				_array[s_pos + i] = value;
-			return _begin + s_pos;
+			//return _begin + s_pos;
+			return iterator(_array + s_pos);
 		}
 
 		pointer __move( pointer __first, pointer __last, pointer __result )
@@ -251,15 +257,17 @@ namespace ft {
 				first++;
 			}
 			return _begin + s_pos; */
-			pointer p = this->_begin + ( pos - begin() );
+
+			//pointer p = this->_begin + ( pos - begin() );
 			difference_type _n = std::distance( first , last );
-			iterator _end_cap = _begin + _capacity;
+			std::cout << _n << std::endl;
+			/*iterator _end_cap(_array + _capacity);
 			if ( _n > 0 )
 			{
 				if ( _n <= _end_cap - this->_end )
 				{
 					if ( p == this->_end )
-						_construct_at_end( _first, _last );
+						_construct_at_end( _first, _last ); //implementar
 					else
 					{
 						_end++;
@@ -273,13 +281,13 @@ namespace ft {
 				{
 					vector __v( this->__alloc() );
 					__v.reserve(_size + p) );	
-					__v.__construct_at_end( this->__begin_, __p );
+					__v.__construct_at_end( this->__begin_, __p ); //implementar
 					__v.__construct_at_end( __first, __last );
 					__v.__construct_at_end( __p , this->__end_);
 					swap( __v );
 				}
-			}
-			return __positions;
+			} */
+			return pos;
 		}
 
 		//ERASE
@@ -298,7 +306,8 @@ namespace ft {
 				return (iterator(ft::nullptr_t));
 			}
 			size_type diff = _distance(first, last);
-			size_type s_first = _distance(_begin, first);
+			size_type s_first = _distance(iterator(_array), first);
+			//size_type s_first = _distance(_begin, first);
 
 			for(size_type i = s_first; i < _size; i++){
 				_allocator.destroy(&_array[i]);
@@ -306,7 +315,7 @@ namespace ft {
 				_allocator.destroy(&_array[i + diff]);
 			}
 			_size -= diff;
-			_end -= diff;
+			//_end -= diff;
 			return first;
 		}
 
@@ -317,7 +326,7 @@ namespace ft {
 				_mod_capacity(_size + 1);
 			_size++;
 			_array[_size - 1] = value;
-			_end++;
+			//_end++;
 		}
 
 		//POP BACK
@@ -326,7 +335,7 @@ namespace ft {
 				return ;
 			_allocator.destroy(&_array[_size - 1]);
 			_size--;
-			_end--;
+			//_end--;
 		}
 
 		//RESIZE
@@ -337,7 +346,7 @@ namespace ft {
 				for (size_type i = _size; i < count; i++)
 					_array[i] = value;
 			_size = count;
-			_end = _begin + _size;
+			//_end = _begin + _size;
 		}
 
 		void swap( vector& _other ) {
@@ -356,11 +365,11 @@ namespace ft {
 			_capacity = _other._capacity;
 			_other._capacity = tmp_size;
 
-			_begin = iterator(_array);
-			_end = _begin + _size;
+			//_begin = iterator(_array);
+			//_end = _begin + _size;
 
-			_other._begin = iterator(_other._array);
-			_other._end = _other._begin + _other._size;
+			//_other._begin = iterator(_other._array);
+			//_other._end = _other._begin + _other._size;
 		}
 
 		private:
@@ -368,8 +377,8 @@ namespace ft {
 		size_type		_size;
 		pointer			_array;
 		allocator_type	_allocator;
-		iterator		_begin;
-		iterator		_end;
+		//iterator		_begin;
+		//iterator		_end;
 
 		void			_mod_capacity(size_type new_capacity) {
 			if (new_capacity <= 0 || new_capacity == _capacity)
@@ -393,8 +402,8 @@ namespace ft {
 			}
 			_array = new_array;
 			_capacity = new_capacity;
-			_begin = iterator(_array);
-			_end = _begin + _size;
+			//_begin = iterator(_array);
+			//_end = _begin + _size;
 		}
 
 		template<typename InputIt>
