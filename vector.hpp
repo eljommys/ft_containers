@@ -5,6 +5,16 @@
 //TODO: reimplementar insert, cambiar todos los iteradores por punteros. No usar iteradores siempre que se pueda
 
 namespace ft {
+
+	template <typename T>
+		T max(T a, T b)
+		{
+			if (a <= b)
+				return b;
+			else
+				return a;
+		}
+
 	template < class T, class Alloc = std::allocator<T> >
 	class vector{
 		public:
@@ -214,7 +224,7 @@ namespace ft {
 				return iterator(ft::nullptr_t);
 			}
 
-			//_size += count;
+			_size += count;
 			//_end += count;
 			for (size_type i = _size; s_pos + count - 1 < i; i--)
 				_array[i] = _array[i - count];
@@ -224,22 +234,14 @@ namespace ft {
 			return iterator(_array + s_pos);
 		}
 
-		pointer __move( pointer __first, pointer __last, pointer __result )
-		{
-			const size_t __n = std::distance (__first , __last);
-			if ( __n > 0 )
-				std::memmove(__result, __first, __n * sizeof( __result ) );
-			return __result + __n;
-		}
-
 		template< class InputIt >
 		iterator insert(	iterator pos, InputIt first, InputIt last,
 						typename ft::enable_if
 						<
 							!ft::is_integral<InputIt>::value, InputIt
 						>::type * = ft::nullptr_t) {
-			/* size_type count = _distance(first, last);
-			size_type s_pos = (_size) ? _distance(_begin, pos) : 0;
+			size_type count = _distance(first, last);
+			size_type s_pos = (_size) ? _distance(iterator(_array), pos) : 0;
 
 			try {
 				reserve(_size + count);
@@ -248,47 +250,94 @@ namespace ft {
 				return iterator(ft::nullptr_t);
 			}
 			_size += count;
-			_begin = iterator(_array);
-			_end = _begin + _size;
+			//_begin = iterator(_array);
+			//_end = _begin + _size;
 			for (size_type i = _size; s_pos + count - 1 < i; i--)
 				_array[i] = _array[i - count];
 			for (size_type i = 0; i < count; i++) {
 				_array[s_pos + i] = *first;
 				first++;
 			}
-			return _begin + s_pos; */
+			return iterator(_array + s_pos);
+		}
 
-			//pointer p = this->_begin + ( pos - begin() );
-			difference_type _n = std::distance( first , last );
-			std::cout << _n << std::endl;
-			/*iterator _end_cap(_array + _capacity);
-			if ( _n > 0 )
+		/* pointer __move( pointer __first, pointer __last, pointer __result )
+		{
+			const size_t __n = std::distance (__first , __last);
+			if ( __n > 0 )
+				std::memmove(__result, __first, __n * sizeof( __result ) );
+			return __result + __n;
+		}
+
+		void __construct_at_end ( size_type __n , const_reference __x )
+		{
+			for (size_type i = 0; i < __n ; ++_capacity , ++i )
+				__vconstruct( __x );
+		}
+
+		template < typename _InputIterator >
+		void __construct_at_end ( _InputIterator __first , _InputIterator __last )
+		{
+			for (; __first != __last ;  ++__first, ++_capacity )
+				__vconstruct( *__first );
+		}
+
+		void __vconstruct(const value_type& __x )
+		{
+			allocator_type().construct( _array + _capacity, __x );
+			_size++;
+		}
+
+		size_type __recommend( size_type __new_size ) const
+		{
+			const size_type __ms = max_size();
+			if ( __new_size > __ms )
+				throw ( std::length_error( "Vector::reserve length error " ) );
+			const size_type __cap = capacity();
+			if ( __cap >= __ms / 2 )
+				return __ms;
+			return ft::max( (2 * __cap ), __new_size );
+		}
+
+		template< class _InputIterator >
+		iterator insert(
+							iterator __positions,
+							_InputIterator __first,
+							_InputIterator __last,
+							typename ft::enable_if
+							<
+								!ft::is_integral<_InputIterator>::value, _InputIterator
+							>::type * = NULL
+						)
+		{
+			pointer __p = _array + ( __positions - begin() );
+			difference_type __n = std::distance( __first , __last );
+			if ( __n > 0 )
 			{
-				if ( _n <= _end_cap - this->_end )
+				if ( __n <= (_array + _capacity) - (_array + _size)  )
 				{
-					if ( p == this->_end )
-						_construct_at_end( _first, _last ); //implementar
+					if ( __p == (_array + _size) )
+						__construct_at_end( __first, __last );
 					else
 					{
-						_end++;
-						__move( p, _array + _size - 1 ,p + _n );
-						for (; first != last ; ++p, ++first )
-							*p = *first;
-						this->_size += _n;
+						__move( __p, (_array + _size++) - 1 ,__p + __n );
+						for (; __first != __last ; ++__p, ++__first )
+							*__p = *__first;
+						_size += __n;
 					}
 				}
 				else
 				{
-					vector __v( this->__alloc() );
-					__v.reserve(_size + p) );	
-					__v.__construct_at_end( this->__begin_, __p ); //implementar
+					vector __v( _allocator );
+					__v.reserve( __recommend( size() + __n ) );
+					__v.__construct_at_end( _array, __p );
 					__v.__construct_at_end( __first, __last );
-					__v.__construct_at_end( __p , this->__end_);
+					__v.__construct_at_end( __p , _array + _size);
 					swap( __v );
 				}
-			} */
-			return pos;
-		}
+			}
+			return __positions;
+		} */
 
 		//ERASE
 		iterator erase( iterator pos ) {
