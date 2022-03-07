@@ -65,7 +65,8 @@ namespace ft {
 			_mod_capacity(new_size);
 			_size = new_size;
 			for (size_type i = 0; i < _size; i++){
-				_array[i] = *_first;
+				_allocator.construct(_array + i, *_first);
+				//_array[i] = *_first;
 				_first++;
 			}
 		}
@@ -76,7 +77,8 @@ namespace ft {
 				_array(ft::nullptr_t) {
 			_mod_capacity(_other.capacity());
 			for (size_type i = 0; i < _other.size(); i++)
-				_array[i] = _other[i];
+				_allocator.construct(_array + i, _other[i]);
+				//_array[i] = _other[i];
 			_size = _other.size();
 		}
 
@@ -95,7 +97,6 @@ namespace ft {
 		//ASSIGN
 		void assign(size_type _count, const T& _value){
 			clear();
-			//_end = _begin;
 			if (_count <= 0)
 				return ;
 			reserve(_count);
@@ -181,8 +182,6 @@ namespace ft {
 		void clear() {
 			if (!_array)
 				return;
-			for (size_type i = 0; i < _size; i++)
-				_allocator.destroy(&(_array[i]));
 			_size = 0;
 		}
 
@@ -203,9 +202,11 @@ namespace ft {
 
 			_size += count;
 			for (size_type i = _size; s_pos + count - 1 < i; i--)
-				_array[i] = _array[i - count];
+				_allocator.construct(_array + i, _array[i - count]);
+				//_array[i] = _array[i - count];
 			for (size_type i = 0; i < count; i++)
-				_array[s_pos + i] = value;
+				_allocator.construct(_array + s_pos + i, value);
+				//_array[s_pos + i] = value;
 			return iterator(_array + s_pos);
 		}
 
@@ -259,9 +260,10 @@ namespace ft {
 			size_type s_first = _distance(iterator(_array), first);
 
 			for(size_type i = s_first; i < _size; i++){
-				_allocator.destroy(&_array[i]);
-				_array[i] = _array[i + diff];
-				_allocator.destroy(&_array[i + diff]);
+				//_allocator.destroy(&_array[i]);
+				//_array[i] = _array[i + diff];
+				_allocator.construct(_array + i, _array[i + diff]);
+				//_allocator.destroy(&_array[i + diff]);
 			}
 			_size -= diff;
 			return first;
@@ -273,14 +275,15 @@ namespace ft {
 			if (_size + 1 > _capacity)
 				_mod_capacity(_size + 1);
 			_size++;
-			_array[_size - 1] = value;
+			_allocator.construct(_array + _size - 1, value);
+			//_array[_size - 1] = value;
 		}
 
 		//POP BACK
 		void pop_back() {
 			if (!_size)
 				return ;
-			_allocator.destroy(&_array[_size - 1]);
+			//_allocator.destroy(&_array[_size - 1]);
 			_size--;
 		}
 
@@ -290,7 +293,8 @@ namespace ft {
 				_mod_capacity(count);
 			if (count > _size)
 				for (size_type i = _size; i < count; i++)
-					_array[i] = value;
+					_allocator.construct(_array + i, value);
+					//_array[i] = value;
 			_size = count;
 		}
 
@@ -359,8 +363,9 @@ namespace ft {
 			if (_array){
 				_size = (new_capacity < _size) ? new_capacity : _size;
 				for (size_type i = 0; i < _size; i++) {
-					new_array[i] = _array[i];
-					_allocator.destroy(&_array[i]);
+					_allocator.construct(new_array + i, _array[i]);
+					//new_array[i] = _array[i];
+					//_allocator.destroy(&_array[i]);
 				}
 				_allocator.deallocate(_array, _capacity);
 			}

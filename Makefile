@@ -4,28 +4,8 @@ init:
 	chmod 777 init.sh
 	./init.sh
 
-all: vector stack map
-
-vector: init
-	cd containers_test ; ./do.sh vector
-
-stack: init
-	cd containers_test ; ./do.sh stack
-
-map: init
-	cd containers_test ; ./do.sh map
-
-test:
-	g++ test.cpp -o test
-	./test
-
 clean:
 	@rm -rf containers_test test
-
-re: all clean
-
-do:
-	cd containers_test ; ./one ../vector.hpp
 
 git: clean
 	@git add .
