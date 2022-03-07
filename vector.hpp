@@ -339,10 +339,9 @@ namespace ft {
 			const size_type ms = max_size();
 			if (_new_size > ms)
 				throw (std::length_error("Vector::reserve length error"));
-			const size_type __cap = capacity();
-			if (__cap >= ms / 2)
+			if (_capacity >= ms / 2)
 				return ms;
-			return ft::max(2 * __cap , _new_size);
+			return ft::max(2 * _capacity , _new_size);
 		}
 
 		void			_mod_capacity(size_type new_capacity) {

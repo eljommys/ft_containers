@@ -21,7 +21,7 @@ namespace ft
 
 		random_access_iterator( const iterator_type & other) : it( other) {}
 
-		virtual ~random_access_iterator(){ /* std::cout << "~random access iterator" << std::endl; */ }
+		virtual ~random_access_iterator(){}
 
 		random_access_iterator & operator=( const random_access_iterator& other) {
 			if (this == &other)
