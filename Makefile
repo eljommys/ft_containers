@@ -4,8 +4,8 @@ SRCS			= main.cpp
 OBJS			= $(SRCS:.cpp=.o)
 
 CPP				= clang++
-CXXFLAGS		= -Wall -Wextra -Werror -std=c++98
-NAME			= containers
+CXXFLAGS		= -Wall -Wextra -Werror -std=c++98 -fsanitize=address -g3
+NAME			= test
 
 all: $(NAME)
 
@@ -18,6 +18,11 @@ init:
 
 clean:
 	@rm -rf containers_test $(OBJS)
+
+fclean: clean
+	@rm -rf $(NAME)
+
+re: fclean $(NAME)
 
 git: clean
 	@git add .
