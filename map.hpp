@@ -64,7 +64,7 @@ namespace ft {
 			const key_compare& comp = key_compare(),
 			const allocator_type& alloc = allocator_type(),
 			typename ft::enable_if
-			< !ft::is_integral<InputIt>::value, InputIt >::type * = NULL) :
+			< !ft::is_integral<InputIt>::value, InputIt >::type * = ft::nullptr_t) :
 				tree(),
 				comp_allocator(ft::make_pair(comp, alloc)) {
 			for (; first != last; ++first)
@@ -130,7 +130,7 @@ namespace ft {
 		void insert (	_InputIterator first,
 						_InputIterator last,
 						typename ft::enable_if
-						< !ft::is_integral<_InputIterator>::value, _InputIterator >::type * = NULL) {
+						< !ft::is_integral<_InputIterator>::value, _InputIterator >::type * = ft::nullptr_t) {
 			for(; first != last; ++first)
 				tree.insert(*first);
 		}
